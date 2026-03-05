@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "64NKjVT1zdI=",
+  "success": true,
+  "projectFilePath": "/Users/nenadjevtic/Desktop/projects/dotnet/UberClone/src/Services/Driver/Driver.API/Driver.API.csproj",
+  "expectedPackageFiles": [
+    "/Users/nenadjevtic/.nuget/packages/microsoft.aspnetcore.openapi/10.0.3/microsoft.aspnetcore.openapi.10.0.3.nupkg.sha512",
+    "/Users/nenadjevtic/.nuget/packages/microsoft.openapi/2.0.0/microsoft.openapi.2.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
