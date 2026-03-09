@@ -3,7 +3,7 @@ services:
     image: postgres:17-alpine
     container_name: driver-db
     environment:
-      POSTGRES_DB: driver-db
+      POSTGRES_DB: driver_db
       POSTGRES_USER: driver
       POSTGRES_PASSWORD: postgres
     ports:
