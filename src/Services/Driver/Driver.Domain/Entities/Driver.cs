@@ -22,8 +22,8 @@ public class Driver : AggregateRoot
         Document = document;
     }
 
-    private FullName FullName { get; }
-    private Email Email { get; }
+    public FullName FullName { get; }
+    public Email Email { get; }
     private Money Fare { get; }
     private Vehicle? Vehicle { get; }
     private DriverStatus Status { get; set; }
@@ -87,6 +87,6 @@ public class Driver : AggregateRoot
 
     public override string ToString()
     {
-        return $"{Id} - {FullName.GetFullName()} - {Vehicle}";
+        return $"{Id} - {FullName} - {Vehicle}";
     }
 }

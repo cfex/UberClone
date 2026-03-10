@@ -50,6 +50,12 @@
       "frameworks": {
         "net10.0": {
           "targetAlias": "net10.0",
+          "dependencies": {
+            "MediatR": {
+              "target": "Package",
+              "version": "[14.1.0, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -701,9 +707,6 @@
             "projectReferences": {
               "/Users/nenadjevtic/Desktop/projects/dotnet/UberClone/src/Services/Driver/Driver.Application/Driver.Application.csproj": {
                 "projectPath": "/Users/nenadjevtic/Desktop/projects/dotnet/UberClone/src/Services/Driver/Driver.Application/Driver.Application.csproj"
-              },
-              "/Users/nenadjevtic/Desktop/projects/dotnet/UberClone/src/Services/Driver/Driver.Domain/Driver.Domain.csproj": {
-                "projectPath": "/Users/nenadjevtic/Desktop/projects/dotnet/UberClone/src/Services/Driver/Driver.Domain/Driver.Domain.csproj"
               }
             }
           }

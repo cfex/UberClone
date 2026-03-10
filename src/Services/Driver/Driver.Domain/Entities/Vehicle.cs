@@ -4,21 +4,21 @@ namespace Driver.Domain.Entities;
 
 public class Vehicle : Entity
 {
-    private Vehicle(string make, string model, string licensePlate, string color, DateTime registeredUntil) : base(
+    private Vehicle(string make, string model, string licensePlate, string color, DateTime registrationDate) : base(
         Guid.NewGuid())
     {
         Make = make;
         Model = model;
         LicensePlate = licensePlate;
         Color = color;
-        RegisteredUntil = registeredUntil;
+        RegistrationDate = registrationDate;
     }
 
     private string Make { get; }
     private string Model { get; }
     private string LicensePlate { get; }
     private string Color { get; }
-    private DateTime RegisteredUntil { get; }
+    private DateTime RegistrationDate { get; }
 
     public static Vehicle Create(string make, string model, string licensePlate, string color, DateTime registeredUntil)
     {
@@ -35,7 +35,8 @@ public class Vehicle : Entity
 
     public bool IsValid()
     {
-        return RegisteredUntil >= DateTime.Now;
+        var oneYearAgo = DateTime.UtcNow.AddYears(-1);
+        return RegistrationDate >= oneYearAgo;
     }
 
     public override string ToString()

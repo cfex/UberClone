@@ -1,3 +1,4 @@
+using Driver.Application;
 using Driver.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -5,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 
 builder.Services.AddDriverInfrastructure(builder.Configuration);
+builder.Services.AddMediatR(cfg => { cfg.RegisterServicesFromAssembly(AssemblyReference.Assembly); });
 
 var app = builder.Build();
 

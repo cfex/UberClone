@@ -2,6 +2,7 @@ namespace Driver.Domain.Enums;
 
 public enum DriverStatus
 {
+    New,
     Offline,
     Online,
     OnRide,

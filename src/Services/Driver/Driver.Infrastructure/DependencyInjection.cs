@@ -1,3 +1,4 @@
+using Driver.Domain.Repositories;
 using Driver.Infrastructure.Persistence;
 using Driver.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +17,9 @@ public static class DependencyInjection
             options.UseNpgsql(configuration.GetConnectionString("DriverDbConnectionString"));
         });
 
-        services.AddScoped<DriverRepository>();
+        services.AddScoped<IDriverRepository, DriverRepository>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        
         return services;
     }
 }
