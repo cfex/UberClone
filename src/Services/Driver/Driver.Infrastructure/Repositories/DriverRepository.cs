@@ -22,4 +22,9 @@ public sealed class DriverRepository : IDriverRepository
     {
         await _dbContext.Drivers.AddAsync(driver, cancellation);
     }
+
+    public async Task<List<Domain.Entities.Driver>> GetAllDrivers(CancellationToken cancellation = default)
+    {
+        return await _dbContext.Drivers.ToListAsync(cancellation);
+    }
 }

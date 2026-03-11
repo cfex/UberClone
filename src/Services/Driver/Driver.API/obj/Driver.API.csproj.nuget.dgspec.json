@@ -1227,6 +1227,18 @@
             "Npgsql.EntityFrameworkCore.PostgreSQL": {
               "target": "Package",
               "version": "[10.0.0, )"
+            },
+            "RabbitMQ.Client": {
+              "target": "Package",
+              "version": "[7.2.1, )"
+            },
+            "WolverineFx": {
+              "target": "Package",
+              "version": "[5.18.1, )"
+            },
+            "WolverineFx.RabbitMQ": {
+              "target": "Package",
+              "version": "[5.18.1, )"
             }
           },
           "imports": [

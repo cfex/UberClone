@@ -1,11 +1,17 @@
+using Driver.Application.Events;
+using Driver.Domain.Primitives;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Driver.Infrastructure.Persistence;
 
 public sealed class DriverDbContext : DbContext
 {
-    public DriverDbContext(DbContextOptions options) : base(options)
+    private readonly IPublisher _publisher;
+
+    public DriverDbContext(DbContextOptions options, IPublisher publisher) : base(options)
     {
+        _publisher = publisher;
     }
 
     public DbSet<Domain.Entities.Driver> Drivers => Set<Domain.Entities.Driver>();
@@ -16,8 +22,24 @@ public sealed class DriverDbContext : DbContext
         base.OnModelCreating(modelBuilder);
     }
 
-    public async Task<int> SaveChangesWithDomainEventAsync(CancellationToken cancellationToken = default)
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
     {
-        return await SaveChangesAsync(cancellationToken);
+        var result = await base.SaveChangesAsync(cancellationToken);
+
+        var entities = ChangeTracker.Entries<AggregateRoot>().Select(e => e.Entity).ToList();
+
+        var domainEvents = entities
+            .SelectMany(e => e.DomainEvents)
+            .ToList();
+
+        foreach (var notification in (from domainEvent in domainEvents
+                     let notificationType = typeof(DriverDomainEvent<>)
+                         .MakeGenericType(domainEvent.GetType())
+                     select Activator.CreateInstance(notificationType, domainEvent)).OfType<object>())
+            await _publisher.Publish(notification, cancellationToken);
+
+        entities.ForEach(entity => entity.ClearDomainEvents());
+
+        return result;
     }
 }

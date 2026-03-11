@@ -18,7 +18,11 @@ public record UpdateDriverStatusCommandHandler : IRequestHandler<UpdateDriverSta
         var driver = await _unitOfWork.Drivers.GetByIdAsync(request.DriverId, cancellationToken);
         if (driver == null) throw new Exception("Driver not found"); // TODO: Custom exceptions;
 
-        switch (request.Status)
+        var isStatusValid = Enum.TryParse(request.Status, out DriverStatusAction status);
+        if (!isStatusValid)
+            throw new Exception("Status is not valid");
+
+        switch (status)
         {
             case DriverStatusAction.GoActive:
             case DriverStatusAction.GoAvailable:

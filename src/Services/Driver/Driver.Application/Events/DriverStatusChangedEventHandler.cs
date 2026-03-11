@@ -1,0 +1,32 @@
+using Driver.Application.Abstractions;
+using Driver.Application.IntegrationEvents;
+using Driver.Domain.Events;
+using MediatR;
+
+namespace Driver.Application.Events;
+
+public class DriverStatusChangedEventHandler : INotificationHandler<DriverDomainEvent<DriverStatusChangedEvent>>
+{
+    private readonly IEventBus _eventBus;
+
+    public DriverStatusChangedEventHandler(IEventBus eventBus)
+    {
+        _eventBus = eventBus;
+    }
+
+    public async Task Handle(DriverDomainEvent<DriverStatusChangedEvent> notification,
+        CancellationToken cancellationToken)
+    {
+        var domainEvent = notification.DomainEvent;
+
+        var integrationEvent = new DriverStatusChangedIntegrationEvent
+        {
+            DriverId = domainEvent.driverId,
+            OldStatus = domainEvent.oldStatus.ToString(),
+            NewStatus = domainEvent.newStatus.ToString(),
+            OccurredOn = domainEvent.OccurredOn
+        };
+
+        await _eventBus.PublishAsync(integrationEvent, cancellationToken);
+    }
+}
