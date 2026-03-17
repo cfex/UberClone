@@ -19,7 +19,7 @@ public class UserCreatedEventHandler
     public async Task Handle(UserCreatedIntegrationEvent message)
     {
         await _unitOfWork.BeginTransactionAsync();
-        if (!message.Role.ToLower().Equals("driver")) return; // throw probably
+        if (!message.Role.ToLower().Equals("driver")) return;
 
         var existingDriver = await _driverRepository.GetByEmail(message.Email);
         if (existingDriver != null) return;

@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Driver.Application.Drivers.Commands.UpdateDriverStatus;
 
-public record UpdateDriverStatusCommandHandler : IRequestHandler<UpdateDriverStatusCommand, Unit>
+internal sealed class UpdateDriverStatusCommandHandler : IRequestHandler<UpdateDriverStatusCommand, Unit>
 {
     private readonly IDriverRepository _driverRepository;
     private readonly IUnitOfWork _unitOfWork;

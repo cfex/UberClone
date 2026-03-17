@@ -1,3 +1,4 @@
+using Driver.API.Exceptions;
 using Driver.Application;
 using Driver.Infrastructure;
 
@@ -9,16 +10,24 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
+        builder.Services.AddProblemDetails(configure =>
+        {
+            configure.CustomizeProblemDetails = context =>
+            {
+                context.ProblemDetails.Extensions.TryAdd("requestId", context.HttpContext.TraceIdentifier);
+            };
+        });
+        builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
         builder.Services.AddOpenApi();
         builder.Services.AddDriverInfrastructure(builder.Configuration);
-        builder.Services.AddMediatR(cfg => { cfg.RegisterServicesFromAssembly(AssemblyReference.Assembly); });
+        builder.Services.AddDriverApplication(builder.Configuration);
         builder.Services.AddControllers();
-
 
         var app = builder.Build();
 
         if (app.Environment.IsDevelopment()) app.MapOpenApi();
 
+        app.UseExceptionHandler();
         app.MapControllers();
         app.UseHttpsRedirection();
 

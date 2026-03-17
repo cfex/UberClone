@@ -27,17 +27,10 @@ public class DriverController : ControllerBase
     public async Task<ActionResult<DriverResponseDto>> GetDriverById(string driverId,
         CancellationToken cancellationToken)
     {
-        try
-        {
-            var query = new GetDriverByIdQuery(Guid.Parse(driverId));
-            var response = await _mediator.Send(query, cancellationToken);
+        var query = new GetDriverByIdQuery(Guid.Parse(driverId));
+        var response = await _mediator.Send(query, cancellationToken);
 
-            return Ok(response);
-        }
-        catch (KeyNotFoundException)
-        {
-            return NotFound($"Driver with {driverId} not found");
-        }
+        return Ok(response);
     }
 
     [HttpPatch("{driverId:guid}")]
@@ -46,17 +39,10 @@ public class DriverController : ControllerBase
     public async Task<ActionResult<Guid>> UpdateDriverStatus(string driverId, string status,
         CancellationToken cancellationToken)
     {
-        try
-        {
-            var command = new UpdateDriverStatusCommand(Guid.Parse(driverId), status);
-            await _mediator.Send(command, cancellationToken);
+        var command = new UpdateDriverStatusCommand(Guid.Parse(driverId), status);
+        await _mediator.Send(command, cancellationToken);
 
-            return Ok("Driver status updated");
-        }
-        catch (Exception e)
-        {
-            return BadRequest(e.Message);
-        }
+        return Ok("Driver status updated");
     }
 
     [HttpGet]
@@ -64,18 +50,10 @@ public class DriverController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<IEnumerable<DriverResponseDto>>> GetDrivers(CancellationToken cancellationToken)
     {
-        try
-        {
-            var query = new GetAllDriversQuery();
-            var response = await _mediator.Send(query, cancellationToken);
+        var query = new GetAllDriversQuery();
+        var response = await _mediator.Send(query, cancellationToken);
 
-            return Ok(response);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
+        return Ok(response);
     }
 
     /// <summary>
@@ -87,22 +65,15 @@ public class DriverController : ControllerBase
     public async Task<ActionResult<Guid>> CreateDriver([FromBody] CreateDriverRequestDto request,
         CancellationToken cancellationToken)
     {
-        try
-        {
-            var command = new CreateDriverCommand(request.FirstName, request.LastName,
-                request.Email, request.FareAmount);
+        var command = new CreateDriverCommand(request.FirstName, request.LastName,
+            request.Email, request.FareAmount);
 
-            var response = await _mediator.Send(command, cancellationToken);
+        var response = await _mediator.Send(command, cancellationToken);
 
-            return CreatedAtAction(
-                nameof(GetDriverById),
-                new { id = response },
-                response
-            );
-        }
-        catch (Exception e)
-        {
-            return BadRequest(e.Message);
-        }
+        return CreatedAtAction(
+            nameof(GetDriverById),
+            new { id = response },
+            response
+        );
     }
 }

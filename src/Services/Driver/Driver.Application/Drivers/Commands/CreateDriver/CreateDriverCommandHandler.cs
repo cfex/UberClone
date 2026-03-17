@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Driver.Application.Drivers.Commands.CreateDriver;
 
-public class CreateDriverCommandHandler
+internal sealed class CreateDriverCommandHandler
     : IRequestHandler<CreateDriverCommand, Guid>
 {
     private readonly IDriverRepository _driverRepository;

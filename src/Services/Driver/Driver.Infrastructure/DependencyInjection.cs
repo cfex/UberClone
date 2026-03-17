@@ -2,6 +2,7 @@ using Driver.Application;
 using Driver.Application.Abstractions;
 using Driver.Domain.Events;
 using Driver.Domain.Repositories;
+using Driver.Infrastructure.Configuration;
 using Driver.Infrastructure.MessageQueue;
 using Driver.Infrastructure.Persistence;
 using Driver.Infrastructure.Repositories;
@@ -25,15 +26,26 @@ public static class DependencyInjection
 
         services.AddScoped<IDriverRepository, DriverRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+        services.AddOptions<RabbitMqOptions>()
+            .Bind(configuration.GetSection(RabbitMqOptions.SectionName))
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
+
+
+        var rabbitMqOptions = configuration.GetSection(RabbitMqOptions.SectionName).Get<RabbitMqOptions>()
+                              ?? throw new InvalidOperationException("RabbitMQ configuration is missing or invalid.");
+
+
         services.AddWolverine(x =>
         {
             x.Policies.DisableConventionalLocalRouting();
             x.UseRabbitMq(rabbit =>
             {
-                rabbit.HostName = configuration["RabbitMQ:Host"] ?? "";
-                rabbit.VirtualHost = configuration["RabbitMQ:VHost"] ?? "";
-                rabbit.UserName = configuration["RabbitMQ:Username"] ?? "";
-                rabbit.Password = configuration["RabbitMQ:Password"] ?? "";
+                rabbit.HostName = rabbitMqOptions.Host;
+                rabbit.VirtualHost = rabbitMqOptions.VHost;
+                rabbit.UserName = rabbitMqOptions.Username;
+                rabbit.Password = rabbitMqOptions.Password;
             }).AutoProvision();
 
             x.ListenToRabbitQueue("user-created-events")
@@ -42,8 +54,8 @@ public static class DependencyInjection
             x.PublishMessage<DriverStatusChangedEvent>()
                 .ToRabbitExchange("driver-status-exchange", ex =>
                 {
-                    ex.ExchangeType = ExchangeType.Direct;
-                    ex.BindQueue("driver-status-queue", "user-created-events");
+                    ex.ExchangeType = ExchangeType.Fanout;
+                    ex.BindQueue("driver-status-queue");
                 });
             x.Discovery.IncludeAssembly(typeof(AssemblyReference).Assembly);
         });
