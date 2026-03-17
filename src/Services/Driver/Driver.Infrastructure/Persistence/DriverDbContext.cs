@@ -32,10 +32,10 @@ public sealed class DriverDbContext : DbContext
             .SelectMany(e => e.DomainEvents)
             .ToList();
 
-        foreach (var notification in (from domainEvent in domainEvents
-                     let notificationType = typeof(DriverDomainEvent<>)
-                         .MakeGenericType(domainEvent.GetType())
-                     select Activator.CreateInstance(notificationType, domainEvent)).OfType<object>())
+        foreach (var notification in from domainEvent in domainEvents
+                 let notificationType = typeof(DriverDomainEvent<>)
+                     .MakeGenericType(domainEvent.GetType())
+                 select Activator.CreateInstance(notificationType, domainEvent))
             await _publisher.Publish(notification, cancellationToken);
 
         entities.ForEach(entity => entity.ClearDomainEvents());

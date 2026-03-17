@@ -2,11 +2,10 @@ using Driver.Domain.Primitives;
 
 namespace Driver.Domain.Events;
 
-public record DriverCompletedRideEvent(Guid EventId, DateTime OccurredOn, Entities.Driver driver) : IDomainEvent
+public record DriverCompletedRideEvent(Guid EventId, DateTime OccurredOn, Guid driverId) : IDomainEvent
 {
-    // TODO: Pass the DTO instead of Driver obj
-    public static DriverCompletedRideEvent Create(Entities.Driver driver)
+    public static DriverCompletedRideEvent Create(Guid driverId)
     {
-        return new DriverCompletedRideEvent(Guid.NewGuid(), DateTime.Now, driver);
+        return new DriverCompletedRideEvent(Guid.NewGuid(), DateTime.Now, driverId);
     }
 }

@@ -7,16 +7,16 @@ namespace Driver.Application.Drivers.Queries;
 
 public class GetAllDriversQueryHandler : IRequestHandler<GetAllDriversQuery, List<DriverResponseDto>>
 {
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly IDriverRepository _driverRepository;
 
-    public GetAllDriversQueryHandler(IUnitOfWork unitOfWork)
+    public GetAllDriversQueryHandler(IUnitOfWork unitOfWork, IDriverRepository driverRepository)
     {
-        _unitOfWork = unitOfWork;
+        _driverRepository = driverRepository;
     }
 
     public async Task<List<DriverResponseDto>> Handle(GetAllDriversQuery request, CancellationToken cancellationToken)
     {
-        var response = await _unitOfWork.Drivers.GetAllDrivers(cancellationToken);
+        var response = await _driverRepository.GetAllDrivers(cancellationToken);
 
         return response.ToDtoList();
     }

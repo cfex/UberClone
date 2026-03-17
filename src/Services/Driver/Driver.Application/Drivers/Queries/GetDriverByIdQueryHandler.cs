@@ -8,16 +8,16 @@ namespace Driver.Application.Drivers.Queries;
 public class GetDriverByIdQueryHandler
     : IRequestHandler<GetDriverByIdQuery, DriverResponseDto>
 {
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly IDriverRepository _driverRepository;
 
-    public GetDriverByIdQueryHandler(IUnitOfWork unitOfWork)
+    public GetDriverByIdQueryHandler(IUnitOfWork unitOfWork, IDriverRepository driverRepository)
     {
-        _unitOfWork = unitOfWork;
+        _driverRepository = driverRepository;
     }
 
     public async Task<DriverResponseDto> Handle(GetDriverByIdQuery request, CancellationToken cancellationToken)
     {
-        var driver = await _unitOfWork.Drivers.GetByIdAsync(request.DriverId, cancellationToken);
+        var driver = await _driverRepository.GetByIdAsync(request.DriverId, cancellationToken);
 
         if (driver == null)
             throw new KeyNotFoundException($"Driver with ID {request.DriverId} not found");

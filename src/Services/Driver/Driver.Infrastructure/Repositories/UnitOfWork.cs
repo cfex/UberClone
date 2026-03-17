@@ -7,16 +7,12 @@ namespace Driver.Infrastructure.Repositories;
 public sealed class UnitOfWork : IUnitOfWork
 {
     private readonly DriverDbContext _context;
-    private IDriverRepository? _driverRepository;
     private IDbContextTransaction? _transaction;
 
     public UnitOfWork(DriverDbContext context)
     {
         _context = context;
     }
-
-    public IDriverRepository Drivers =>
-        _driverRepository ??= new DriverRepository(_context);
 
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {

@@ -51,38 +51,38 @@ public class Driver : AggregateRoot
         if (Vehicle != null && !Vehicle.IsValid()) throw new Exception("Vehicle is not valid");
         if (Status == DriverStatus.OnRide) throw new Exception("Driver is busy");
 
-        Status = DriverStatus.Online;
         AddDomainEvent(DriverStatusChangedEvent.Create(Id, Status, DriverStatus.Online));
+        Status = DriverStatus.Online;
     }
 
     public void GoOffline()
     {
         if (Status == DriverStatus.OnRide) throw new Exception("Driver is busy");
 
-        Status = DriverStatus.Offline;
         AddDomainEvent(DriverStatusChangedEvent.Create(Id, Status, DriverStatus.Offline));
+        Status = DriverStatus.Offline;
     }
 
     public void StartCommuting()
     {
         if (Status == DriverStatus.OnRide) throw new Exception("Driver is busy");
-        Status = DriverStatus.Commuting;
         AddDomainEvent(DriverStatusChangedEvent.Create(Id, Status, DriverStatus.Commuting));
+        Status = DriverStatus.Commuting;
     }
 
     public void StartRide()
     {
         if (Status == DriverStatus.OnRide) throw new Exception("Driver is busy");
-        Status = DriverStatus.OnRide;
         AddDomainEvent(DriverStatusChangedEvent.Create(Id, Status, DriverStatus.OnRide));
+        Status = DriverStatus.OnRide;
     }
 
     public void CompleteRide()
     {
         if (Status != DriverStatus.OnRide) throw new Exception("Driver is not on the ride");
-        Status = DriverStatus.Available;
         AddDomainEvent(DriverStatusChangedEvent.Create(Id, Status, DriverStatus.Available));
-        AddDomainEvent(DriverCompletedRideEvent.Create(this));
+        Status = DriverStatus.Available;
+        AddDomainEvent(DriverCompletedRideEvent.Create(Id));
     }
 
     public override string ToString()

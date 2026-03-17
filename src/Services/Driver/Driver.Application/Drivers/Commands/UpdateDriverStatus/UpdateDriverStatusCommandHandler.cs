@@ -6,17 +6,20 @@ namespace Driver.Application.Drivers.Commands.UpdateDriverStatus;
 
 public record UpdateDriverStatusCommandHandler : IRequestHandler<UpdateDriverStatusCommand, Unit>
 {
+    private readonly IDriverRepository _driverRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-    public UpdateDriverStatusCommandHandler(IUnitOfWork unitOfWork)
+    public UpdateDriverStatusCommandHandler(IUnitOfWork unitOfWork, IDriverRepository driverRepository)
     {
         _unitOfWork = unitOfWork;
+        _driverRepository = driverRepository;
     }
 
     public async Task<Unit> Handle(UpdateDriverStatusCommand request, CancellationToken cancellationToken)
     {
-        var driver = await _unitOfWork.Drivers.GetByIdAsync(request.DriverId, cancellationToken);
-        if (driver == null) throw new Exception("Driver not found"); // TODO: Custom exceptions;
+        await _unitOfWork.BeginTransactionAsync(cancellationToken);
+        var driver = await _driverRepository.GetByIdAsync(request.DriverId, cancellationToken);
+        if (driver == null) throw new Exception("Driver not found");
 
         var isStatusValid = Enum.TryParse(request.Status, out DriverStatusAction status);
         if (!isStatusValid)
@@ -41,7 +44,7 @@ public record UpdateDriverStatusCommandHandler : IRequestHandler<UpdateDriverSta
                 break;
         }
 
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await _unitOfWork.CommitTransactionAsync(cancellationToken);
 
         return Unit.Value;
     }

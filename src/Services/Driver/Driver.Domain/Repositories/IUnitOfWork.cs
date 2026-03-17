@@ -2,7 +2,6 @@ namespace Driver.Domain.Repositories;
 
 public interface IUnitOfWork : IDisposable
 {
-    IDriverRepository Drivers { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     Task BeginTransactionAsync(CancellationToken cancellationToken = default);
     Task CommitTransactionAsync(CancellationToken cancellationToken = default);

@@ -15,7 +15,16 @@ public sealed class DriverRepository : IDriverRepository
 
     public async Task<Domain.Entities.Driver?> GetByIdAsync(Guid id, CancellationToken cancellation = default)
     {
-        return await _dbContext.Drivers.FirstOrDefaultAsync(d => d.Id == id, cancellation);
+        return await _dbContext.Drivers
+            .Where(x => x.Id == id)
+            .FirstOrDefaultAsync(cancellation);
+    }
+
+    public async Task<Domain.Entities.Driver?> GetByEmail(string email, CancellationToken cancellation = default)
+    {
+        return await _dbContext.Drivers
+            .Where(x => x.Email.Equals(email))
+            .FirstOrDefaultAsync(cancellation);
     }
 
     public async Task CreateAsync(Domain.Entities.Driver driver, CancellationToken cancellation = default)
@@ -25,6 +34,6 @@ public sealed class DriverRepository : IDriverRepository
 
     public async Task<List<Domain.Entities.Driver>> GetAllDrivers(CancellationToken cancellation = default)
     {
-        return await _dbContext.Drivers.ToListAsync(cancellation);
+        return await _dbContext.Drivers.AsNoTracking().ToListAsync(cancellation);
     }
 }
