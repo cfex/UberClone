@@ -1,3 +1,4 @@
+using Driver.Domain.Enums;
 using Driver.Domain.Repositories;
 using Driver.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +26,15 @@ public sealed class DriverRepository : IDriverRepository
         return await _dbContext.Drivers
             .Where(x => x.Email.Equals(email))
             .FirstOrDefaultAsync(cancellation);
+    }
+
+    public async Task<List<Domain.Entities.Driver>> GetAllByStatus(DriverStatus status,
+        CancellationToken cancellation = default)
+    {
+        return await _dbContext.Drivers
+            .Where(x => x.Status == status)
+            .AsNoTracking()
+            .ToListAsync(cancellation);
     }
 
     public async Task CreateAsync(Domain.Entities.Driver driver, CancellationToken cancellation = default)

@@ -26,16 +26,17 @@ public class Driver : AggregateRoot
     public Email Email { get; }
     private Money Fare { get; }
     private Vehicle? Vehicle { get; }
-    private DriverStatus Status { get; set; }
+    public DriverStatus Status { get; set; }
     private Document? Document { get; set; }
 
     public static Driver Create(Guid id, FullName fullName, Email email, DriverStatus status, Money fare,
+        string role,
         Document? document,
         Vehicle? vehicle)
     {
         var driver = new Driver(id, fullName, email, status, fare, document, vehicle);
 
-        driver.AddDomainEvent(DriverCreatedEvent.Create(driver.Id, email, fullName));
+        driver.AddDomainEvent(DriverCreatedEvent.Create(driver.Id, email, fullName, role));
         return driver;
     }
 

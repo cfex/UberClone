@@ -15,6 +15,8 @@ public record Money
 
     public static Money Create(double amount, Currency currency)
     {
+        if (amount <= 0) throw new ArgumentException("Amount must be greater than zero");
+
         return new Money(amount, currency);
     }
 

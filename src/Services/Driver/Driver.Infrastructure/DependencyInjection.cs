@@ -51,11 +51,23 @@ public static class DependencyInjection
             x.ListenToRabbitQueue("user-created-events")
                 .UseForReplies()
                 .UseDurableInbox();
+            x.ListenForMessagesFrom("ride-request-events")
+                .UseForReplies()
+                .UseDurableInbox();
+
             x.PublishMessage<DriverStatusChangedEvent>()
-                .ToRabbitExchange("driver-status-exchange", ex =>
+                .ToRabbitExchange("driver_events", ex =>
                 {
-                    ex.ExchangeType = ExchangeType.Fanout;
-                    ex.BindQueue("driver-status-queue");
+                    ex.ExchangeType = ExchangeType.Topic;
+                    ex.IsDurable = true;
+                    ex.BindQueue("driver-events-queue");
+                });
+            x.PublishMessage<DriverCreatedEvent>()
+                .ToRabbitExchange("driver-events", ex =>
+                {
+                    ex.ExchangeType = ExchangeType.Topic;
+                    ex.IsDurable = true;
+                    ex.BindQueue("driver-events-queue");
                 });
             x.Discovery.IncludeAssembly(typeof(AssemblyReference).Assembly);
         });

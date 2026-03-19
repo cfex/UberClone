@@ -25,13 +25,12 @@ public class UserCreatedEventHandler
         if (existingDriver != null) return;
 
         var driver = Domain.Entities.Driver.Create(
-            Guid.Parse(message.UserId),
+            message.UserId,
             FullName.Create(message.FirstName, message.LastName),
             Email.Create(message.Email),
             DriverStatus.New,
             Money.Create(0, Currency.USD),
-            null,
-            null
+            message.Role, null, null
         );
 
         await _driverRepository.CreateAsync(driver);

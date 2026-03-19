@@ -25,11 +25,12 @@ internal sealed class CreateDriverCommandHandler
             Email.Create(request.Email),
             DriverStatus.New,
             Money.Create(request.FareAmount, request.Currency),
+            "driver",
             null,
             null);
 
         await _driverRepository.CreateAsync(driver, cancellationToken);
-        await _unitOfWork.CommitTransactionAsync(cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return driver.Id;
     }

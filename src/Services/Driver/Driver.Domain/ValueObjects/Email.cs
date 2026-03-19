@@ -14,7 +14,6 @@ public record Email
 
     public static Email Create(string value, bool isVerified = false)
     {
-        // TODO: Add validation
         return new Email(value, isVerified);
     }
 }
