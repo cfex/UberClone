@@ -1,0 +1,23 @@
+using Driver.Application.Dtos;
+using Driver.Application.Extensions;
+using Driver.Domain.Repositories;
+using MediatR;
+
+namespace Driver.Application.Drivers.Queries;
+
+public class GetAllDriversQueryHandler : IRequestHandler<GetAllDriversQuery, List<DriverResponseDto>>
+{
+    private readonly IDriverRepository _driverRepository;
+
+    public GetAllDriversQueryHandler(IUnitOfWork unitOfWork, IDriverRepository driverRepository)
+    {
+        _driverRepository = driverRepository;
+    }
+
+    public async Task<List<DriverResponseDto>> Handle(GetAllDriversQuery request, CancellationToken cancellationToken)
+    {
+        var response = await _driverRepository.GetAllDrivers(cancellationToken);
+
+        return response.ToDtoList();
+    }
+}
