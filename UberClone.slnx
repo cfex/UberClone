@@ -7,6 +7,12 @@
     <Project Path="src/Services/Driver/Driver.Domain/Driver.Domain.csproj" />
     <Project Path="src/Services/Driver/Driver.Infrastructure/Driver.Infrastructure.csproj" />
   </Folder>
+  <Folder Name="/src/Services/Ride/">
+    <Project Path="src/Services/Ride/Ride.API/Ride.API.csproj" />
+    <Project Path="src/Services/Ride/Ride.Application/Ride.Application.csproj" />
+    <Project Path="src/Services/Ride/Ride.Domain/Ride.Domain.csproj" />
+    <Project Path="src/Services/Ride/Ride.Infrastructure/Ride.Infrastructure.csproj" />
+  </Folder>
   <Folder Name="/src/Shared/">
     <Project Path="src/Shared/Shared.Contracts/Shared.Contracts.csproj" />
   </Folder>

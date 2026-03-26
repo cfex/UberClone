@@ -1,0 +1,79 @@
+using Driver.Domain.Primitives;
+using Ride.Domain.Enums;
+using Ride.Domain.Events;
+using Ride.Domain.ValueObjects;
+
+namespace Ride.Domain.Entities;
+
+public class Ride : AggregateRoot
+{
+    private Ride()
+    {
+    }
+
+    public Ride(Guid driverId, Guid passengerId, Location pickupLocation, Location destination, RideStatus status,
+        Money proposedPrice)
+    {
+        DriverId = driverId;
+        PassengerId = passengerId;
+        PickupLocation = pickupLocation;
+        Destination = destination;
+        ProposedPrice = proposedPrice;
+        Price = proposedPrice;
+        Status = status;
+    }
+
+    public Guid DriverId { get; private set; }
+    public Guid PassengerId { get; init; }
+    public Location PickupLocation { get; init; }
+    public Location Destination { get; init; }
+    public RideStatus Status { get; set; }
+    public Money Price { get; set; }
+    public Money ProposedPrice { get; init; }
+    public DateTime CreatedAt { get; init; }
+    public DateTime? StartedAt { get; private set; }
+    public DateTime? CompletedAt { get; set; }
+
+    public static Ride Create(Guid driverId, Guid passengerId, Location pickupLocation, Location destination,
+        RideStatus status,
+        Money proposedPrice)
+    {
+        var ride = new Ride(driverId, passengerId, pickupLocation, destination, status, proposedPrice);
+
+        ride.AddDomainEvent(RideRequestedEvent.Create(ride.PassengerId, ride.PickupLocation, ride.Destination));
+
+        return ride;
+    }
+
+    public void AssignDriver(Guid driverId)
+    {
+        DriverId = driverId;
+        // AddDomainEvent();
+    }
+
+    public void StartRide()
+    {
+        Status = RideStatus.InProgress;
+        StartedAt = DateTime.UtcNow;
+        // AddDomainEvent();
+    }
+
+    public void CompleteRide()
+    {
+        Status = RideStatus.Completed;
+        var now = DateTime.UtcNow;
+        CompletedAt = now;
+        AddDomainEvent(RideCompletedEvent.Create(DriverId, PassengerId, Price, now));
+    }
+
+    public void CancelRide()
+    {
+        Status = RideStatus.Cancelled;
+        // AddDomainEvent();
+    }
+
+    public void SetFinalPrice(Money price)
+    {
+        Price = price;
+    }
+}

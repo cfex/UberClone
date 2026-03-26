@@ -18,6 +18,7 @@ public sealed class DriverRepository : IDriverRepository
     {
         return await _dbContext.Drivers
             .Where(x => x.Id == id)
+            .AsNoTracking()
             .FirstOrDefaultAsync(cancellation);
     }
 
@@ -25,6 +26,7 @@ public sealed class DriverRepository : IDriverRepository
     {
         return await _dbContext.Drivers
             .Where(x => x.Email.Equals(email))
+            .AsNoTracking()
             .FirstOrDefaultAsync(cancellation);
     }
 

@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <ItemGroup>
+        <ProjectReference Include="..\Ride.Domain\Ride.Domain.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="MediatR" Version="14.1.0"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.3"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="Rides\Commands\AcceptRide\"/>
+        <Folder Include="Rides\Commands\CancelRide\"/>
+        <Folder Include="Rides\Queries\"/>
+    </ItemGroup>
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+</Project>
