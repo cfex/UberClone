@@ -7,8 +7,14 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Grpc.AspNetCore" Version="2.70.0"/>
         <PackageReference Include="MediatR" Version="14.1.0"/>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.3"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <!-- Client-side: Generise C# klase za pozivanje servisa -->
+        <Protobuf Include="Protos\driver.proto" GrpcServices="Client"/>
     </ItemGroup>
 
     <ItemGroup>

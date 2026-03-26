@@ -51,7 +51,7 @@ public static class DependencyInjection
             x.ListenToRabbitQueue("user-created-events")
                 .UseForReplies()
                 .UseDurableInbox();
-            x.ListenForMessagesFrom("ride-request-events")
+            x.ListenToRabbitQueue("ride-request-events")
                 .UseForReplies()
                 .UseDurableInbox();
 

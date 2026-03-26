@@ -1,12 +1,15 @@
 using Driver.API.Exceptions;
+using Driver.API.Grpc;
 using Driver.Application;
 using Driver.Infrastructure;
+using Driver.Infrastructure.Persistence;
+using Driver.Infrastructure.Seeding;
 
 namespace Driver.API;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +22,9 @@ public class Program
         });
         builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
         builder.Services.AddOpenApi();
+
+        builder.Services.AddGrpc();
+
         builder.Services.AddDriverInfrastructure(builder.Configuration);
         builder.Services.AddDriverApplication(builder.Configuration);
         builder.Services.AddControllers();
@@ -28,9 +34,18 @@ public class Program
         if (app.Environment.IsDevelopment()) app.MapOpenApi();
 
         app.UseExceptionHandler();
+
+        app.MapGrpcService<DriverGrpcService>();
+
         app.MapControllers();
         app.UseHttpsRedirection();
 
-        app.Run();
+        using (var scope = app.Services.CreateScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<DriverDbContext>();
+            await DriverSeeder.SeedDriversAsync(context);
+        }
+
+        await app.RunAsync();
     }
 }

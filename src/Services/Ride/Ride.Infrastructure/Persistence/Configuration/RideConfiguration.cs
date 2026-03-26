@@ -22,26 +22,55 @@ public class RideConfiguration : IEntityTypeConfiguration<Domain.Entities.Ride>
             .HasConversion<string>()
             .IsRequired();
 
-        builder.Property(x => x.PickupLocation)
-            .HasColumnName("pickup_location")
-            .HasConversion<string>()
-            .IsRequired();
+        builder.OwnsOne(x => x.PickupLocation, locationBuilder =>
+        {
+            locationBuilder.Property(l => l.Latitude)
+                .HasColumnName("pickup_latitude")
+                .IsRequired();
 
-        builder.Property(x => x.Destination)
-            .HasColumnName("destination")
-            .HasConversion<string>()
-            .IsRequired();
+            locationBuilder.Property(l => l.Longitude)
+                .HasColumnName("pickup_longitude")
+                .IsRequired();
+        });
 
-        builder.Property(x => x.Price)
-            .HasColumnName("price")
-            .HasConversion<double>()
-            .HasDefaultValue(0.0)
-            .IsRequired();
+        builder.OwnsOne(x => x.Destination, locationBuilder =>
+        {
+            locationBuilder.Property(l => l.Latitude)
+                .HasColumnName("destination_latitude")
+                .IsRequired();
 
-        builder.Property(x => x.ProposedPrice)
-            .HasColumnName("proposed_price")
-            .HasConversion<double>()
-            .IsRequired();
+            locationBuilder.Property(l => l.Longitude)
+                .HasColumnName("destination_longitude")
+                .IsRequired();
+        });
+
+        builder.OwnsOne(x => x.Price, priceBuilder =>
+        {
+            priceBuilder.Property("_amount")
+                .HasColumnName("price")
+                .HasDefaultValue(0.0)
+                .IsRequired();
+
+            priceBuilder.Property("_currency")
+                .HasColumnName("currency")
+                .HasConversion<string>()
+                .HasDefaultValue(Currency.USD)
+                .IsRequired();
+        });
+        
+        builder.OwnsOne(x => x.ProposedPrice, proposedPriceBuilder =>
+        {
+            proposedPriceBuilder.Property("_amount")
+                .HasColumnName("proposed_price")
+                .HasDefaultValue(0.0)
+                .IsRequired();
+
+            proposedPriceBuilder.Property("_currency")
+                .HasColumnName("proposed_currency")
+                .HasConversion<string>()
+                .HasDefaultValue(Currency.USD)
+                .IsRequired();
+        });
 
         builder.Ignore("_domainEvents");
     }

@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+option csharp_namespace = "Driver.API.Grpc";
+
+package driver;
+
+service DriverService {
+  rpc GetDriverInfo (GetDriverInfoRequest) returns (DriverInfoResponse);
+  
+  rpc IsDriverAvailable (IsDriverAvailableRequest) returns (IsDriverAvailableResponse);
+}
+
+message GetDriverInfoRequest {
+  string driver_id = 1;
+}
+
+message DriverInfoResponse {
+  string driver_id = 1;
+  string name = 2;
+  string vehicle_type = 4;
+  string license_plate = 5;
+}
+
+message IsDriverAvailableRequest {
+  string driver_id = 1;
+}
+
+message IsDriverAvailableResponse {
+  bool is_available = 1;
+}
