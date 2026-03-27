@@ -9,7 +9,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
 
-// Konfiguracija gRPC klijenta
 var driverGrpcAddress = builder.Configuration["GrpcServices:DriverService"]
                         ?? "http://localhost:5001";
 

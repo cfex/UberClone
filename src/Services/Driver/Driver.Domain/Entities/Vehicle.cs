@@ -1,9 +1,15 @@
+using System.Text.Json.Serialization;
 using Driver.Domain.Primitives;
 
 namespace Driver.Domain.Entities;
 
 public class Vehicle : Entity
 {
+    [JsonConstructor]
+    private Vehicle()
+    {
+    }
+
     private Vehicle(string make, string model, string licensePlate, string color, DateTime registrationDate) : base(
         Guid.NewGuid())
     {
@@ -14,11 +20,11 @@ public class Vehicle : Entity
         RegistrationDate = registrationDate;
     }
 
-    private string Make { get; }
-    private string Model { get; }
-    private string LicensePlate { get; }
-    private string Color { get; }
-    private DateTime RegistrationDate { get; }
+    public string Make { get; }
+    public string Model { get; }
+    public string LicensePlate { get; }
+    public string Color { get; }
+    public DateTime RegistrationDate { get; }
 
     public static Vehicle Create(string make, string model, string licensePlate, string color, DateTime registeredUntil)
     {

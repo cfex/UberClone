@@ -1,5 +1,4 @@
 using Driver.Application.Drivers.Commands.GetDriverInfo;
-using Driver.Domain.Repositories;
 using Grpc.Core;
 using MediatR;
 
@@ -10,7 +9,7 @@ public class DriverGrpcService : DriverService.DriverServiceBase
     private readonly ILogger<DriverGrpcService> _logger;
     private readonly IMediator _mediator;
 
-    public DriverGrpcService(ILogger<DriverGrpcService> logger, IDriverRepository driverRepository, IMediator mediator)
+    public DriverGrpcService(ILogger<DriverGrpcService> logger, IMediator mediator)
     {
         _logger = logger;
         _mediator = mediator;

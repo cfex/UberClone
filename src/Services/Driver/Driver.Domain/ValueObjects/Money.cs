@@ -1,17 +1,23 @@
+using System.Text.Json.Serialization;
 using Driver.Domain.Enums;
 
 namespace Driver.Domain.ValueObjects;
 
 public record Money
 {
-    private readonly double _amount;
-    private readonly Currency _currency;
+    [JsonConstructor]
+    private Money()
+    {
+    }
 
     private Money(double amount, Currency currency)
     {
-        _amount = amount;
-        _currency = currency;
+        Amount = amount;
+        Currency = currency;
     }
+
+    public double Amount { get; }
+    public Currency Currency { get; }
 
     public static Money Create(double amount, Currency currency)
     {
@@ -22,6 +28,6 @@ public record Money
 
     public override string ToString()
     {
-        return $"{_amount:C} {_currency}";
+        return $"{Amount:C} {Currency}";
     }
 }

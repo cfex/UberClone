@@ -1,9 +1,11 @@
+using System.Net;
 using Driver.API.Exceptions;
 using Driver.API.Grpc;
 using Driver.Application;
 using Driver.Infrastructure;
 using Driver.Infrastructure.Persistence;
 using Driver.Infrastructure.Seeding;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 namespace Driver.API;
 
@@ -23,6 +25,11 @@ public class Program
         builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
         builder.Services.AddOpenApi();
 
+        builder.WebHost.ConfigureKestrel(options =>
+        {
+            options.Listen(IPAddress.Any, 5001,
+                listenOptions => { listenOptions.Protocols = HttpProtocols.Http2; });
+        });
         builder.Services.AddGrpc();
 
         builder.Services.AddDriverInfrastructure(builder.Configuration);
@@ -36,6 +43,7 @@ public class Program
         app.UseExceptionHandler();
 
         app.MapGrpcService<DriverGrpcService>();
+
 
         app.MapControllers();
         app.UseHttpsRedirection();

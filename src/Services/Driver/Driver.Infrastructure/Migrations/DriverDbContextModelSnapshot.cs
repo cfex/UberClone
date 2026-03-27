@@ -17,7 +17,7 @@ namespace Driver.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.4")
+                .HasAnnotation("ProductVersion", "10.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -36,6 +36,11 @@ namespace Driver.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("email");
+
+                    b.Property<string>("Fare")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("fare");
 
                     b.Property<string>("FullName")
                         .IsRequired()

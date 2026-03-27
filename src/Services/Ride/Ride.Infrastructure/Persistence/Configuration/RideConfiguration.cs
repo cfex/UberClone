@@ -46,26 +46,26 @@ public class RideConfiguration : IEntityTypeConfiguration<Domain.Entities.Ride>
 
         builder.OwnsOne(x => x.Price, priceBuilder =>
         {
-            priceBuilder.Property("_amount")
+            priceBuilder.Property(p => p.Amount)
                 .HasColumnName("price")
                 .HasDefaultValue(0.0)
                 .IsRequired();
 
-            priceBuilder.Property("_currency")
+            priceBuilder.Property(p => p.Currency)
                 .HasColumnName("currency")
                 .HasConversion<string>()
                 .HasDefaultValue(Currency.USD)
                 .IsRequired();
         });
-        
+
         builder.OwnsOne(x => x.ProposedPrice, proposedPriceBuilder =>
         {
-            proposedPriceBuilder.Property("_amount")
+            proposedPriceBuilder.Property(p => p.Amount)
                 .HasColumnName("proposed_price")
                 .HasDefaultValue(0.0)
                 .IsRequired();
 
-            proposedPriceBuilder.Property("_currency")
+            proposedPriceBuilder.Property(p => p.Currency)
                 .HasColumnName("proposed_currency")
                 .HasConversion<string>()
                 .HasDefaultValue(Currency.USD)

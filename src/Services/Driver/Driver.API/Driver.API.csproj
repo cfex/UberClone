@@ -7,26 +7,27 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Grpc.AspNetCore" Version="2.70.0" />
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.3" />
+        <PackageReference Include="Grpc.AspNetCore" Version="2.70.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.3"/>
+        <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel.Core" Version="2.3.9"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.5">
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-          <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
         </PackageReference>
     </ItemGroup>
 
     <ItemGroup>
         <!-- Server-side: Generise C# klase za implementaciju servisa -->
-        <Protobuf Include="Protos\driver.proto" GrpcServices="Server" />
+        <Protobuf Include="Protos\driver.proto" GrpcServices="Server"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Driver.Application\Driver.Application.csproj" />
-        <ProjectReference Include="..\Driver.Infrastructure\Driver.Infrastructure.csproj" />
+        <ProjectReference Include="..\Driver.Application\Driver.Application.csproj"/>
+        <ProjectReference Include="..\Driver.Infrastructure\Driver.Infrastructure.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Dtos\" />
+        <Folder Include="Dtos\"/>
     </ItemGroup>
 
 </Project>

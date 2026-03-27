@@ -44,6 +44,11 @@ public sealed class DriverConfiguration : IEntityTypeConfiguration<Domain.Entiti
             .HasConversion(JsonConverter<Vehicle>())
             .IsRequired();
 
+        builder.Property<Money>("Fare")
+            .HasColumnName("fare")
+            .HasConversion(JsonConverter<Money>())
+            .IsRequired();
+
         builder.Ignore("_domainEvents");
     }
 

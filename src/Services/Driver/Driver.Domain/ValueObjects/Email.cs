@@ -1,7 +1,10 @@
+using System.Text.Json.Serialization;
+
 namespace Driver.Domain.ValueObjects;
 
 public record Email
 {
+    [JsonConstructor]
     private Email(string value, bool isVerified)
     {
         Value = value;

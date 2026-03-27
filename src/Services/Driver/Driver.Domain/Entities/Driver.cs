@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Driver.Domain.Enums;
 using Driver.Domain.Events;
 using Driver.Domain.Primitives;
@@ -7,6 +8,7 @@ namespace Driver.Domain.Entities;
 
 public class Driver : AggregateRoot
 {
+    [JsonConstructor]
     private Driver()
     {
     }
@@ -24,10 +26,10 @@ public class Driver : AggregateRoot
 
     public FullName FullName { get; }
     public Email Email { get; }
-    private Money Fare { get; }
-    private Vehicle? Vehicle { get; }
+    public Money Fare { get; private set; }
+    public Vehicle? Vehicle { get; }
     public DriverStatus Status { get; set; }
-    private Document? Document { get; set; }
+    public Document? Document { get; set; }
 
     public static Driver Create(Guid id, FullName fullName, Email email, DriverStatus status, Money fare,
         string role,
