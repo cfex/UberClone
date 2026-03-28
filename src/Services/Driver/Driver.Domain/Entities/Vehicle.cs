@@ -1,11 +1,9 @@
-using System.Text.Json.Serialization;
 using Driver.Domain.Primitives;
 
 namespace Driver.Domain.Entities;
 
 public class Vehicle : Entity
 {
-    [JsonConstructor]
     private Vehicle()
     {
     }
@@ -22,21 +20,35 @@ public class Vehicle : Entity
 
     public string Make { get; }
     public string Model { get; }
-    public string LicensePlate { get; }
-    public string Color { get; }
-    public DateTime RegistrationDate { get; }
+    public string LicensePlate { get; private set; }
+    public string Color { get; private set; }
+    public DateTime RegistrationDate { get; private set; }
 
     public static Vehicle Create(string make, string model, string licensePlate, string color, DateTime registeredUntil)
     {
-        if (string.IsNullOrWhiteSpace(make)) throw new ArgumentException("Make cannot be empty.");
-
-        if (string.IsNullOrWhiteSpace(model)) throw new ArgumentException("Model cannot be empty.");
-
-        if (string.IsNullOrWhiteSpace(licensePlate)) throw new ArgumentException("License plate cannot be empty.");
-
-        if (string.IsNullOrWhiteSpace(color)) throw new ArgumentException("Color cannot be empty.");
+        ArgumentException.ThrowIfNullOrWhiteSpace(make);
+        ArgumentException.ThrowIfNullOrWhiteSpace(model);
+        ArgumentException.ThrowIfNullOrWhiteSpace(licensePlate);
+        ArgumentException.ThrowIfNullOrWhiteSpace(color);
 
         return new Vehicle(make.Trim(), model.Trim(), licensePlate.Trim(), color.Trim(), registeredUntil);
+    }
+
+    public void UpdateColor(string color)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(color);
+        Color = color;
+    }
+
+    public void RenewRegistration()
+    {
+        RegistrationDate = DateTime.UtcNow.AddYears(1);
+    }
+
+    public void UpdateLicencePlate(string licencePlate)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(licencePlate);
+        LicensePlate = licencePlate;
     }
 
     public bool IsValid()

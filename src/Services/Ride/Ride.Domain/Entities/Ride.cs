@@ -11,34 +11,29 @@ public class Ride : AggregateRoot
     {
     }
 
-    public Ride(Guid driverId, Guid passengerId, Location pickupLocation, Location destination, RideStatus status,
-        Money proposedPrice)
+    public Ride(Guid driverId, Guid passengerId, Location pickupLocation, Location destination, RideStatus status)
     {
         DriverId = driverId;
         PassengerId = passengerId;
         PickupLocation = pickupLocation;
         Destination = destination;
-        ProposedPrice = proposedPrice;
-        Price = proposedPrice;
         Status = status;
     }
 
     public Guid DriverId { get; private set; }
     public Guid PassengerId { get; init; }
     public Location PickupLocation { get; init; }
-    public Location Destination { get; init; }
-    public RideStatus Status { get; set; }
-    public Money Price { get; set; }
-    public Money ProposedPrice { get; init; }
+    public Location Destination { get; }
+    public RideStatus Status { get; private set; }
+    public Money Price { get; private set; }
     public DateTime CreatedAt { get; init; }
     public DateTime? StartedAt { get; private set; }
-    public DateTime? CompletedAt { get; set; }
+    public DateTime? CompletedAt { get; private set; }
 
     public static Ride Create(Guid driverId, Guid passengerId, Location pickupLocation, Location destination,
-        RideStatus status,
-        Money proposedPrice)
+        RideStatus status)
     {
-        var ride = new Ride(driverId, passengerId, pickupLocation, destination, status, proposedPrice);
+        var ride = new Ride(driverId, passengerId, pickupLocation, destination, status);
 
         ride.AddDomainEvent(RideRequestedEvent.Create(ride.PassengerId, ride.PickupLocation, ride.Destination));
 

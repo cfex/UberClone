@@ -23,13 +23,23 @@ public class RequestRideCommandHandler : IRequestHandler<RequestRideCommand, Gui
         // publish an event
 
         // var pickupLocation = call location service 
-        var ride = Domain.Entities.Ride.Create(Guid.NewGuid(), request.PassengerId, request.Destination,
-            request.Destination, RideStatus.Requested, Money.Create(0.0, Currency.EUR));
+        var location = RandomLocation();
+        var ride = Domain.Entities.Ride.Create(Guid.NewGuid(), request.PassengerId,
+            Location.Create(location.Longitude, location.Latitude),
+            request.Destination, RideStatus.Requested);
 
 
         await _rideRepository.CreateAsync(ride, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return ride.Id;
+    }
+
+    private static (double Latitude, double Longitude) RandomLocation()
+    {
+        var random = new Random();
+        var latitude = random.NextDouble() * 180 - 90;
+        var longitude = random.NextDouble() * 360 - 180;
+        return (latitude, longitude);
     }
 }

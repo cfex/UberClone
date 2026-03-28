@@ -1,4 +1,3 @@
-using System.Text.Json.Serialization;
 using Driver.Domain.Enums;
 using Driver.Domain.Primitives;
 
@@ -6,7 +5,6 @@ namespace Driver.Domain.Entities;
 
 public class Document : Entity
 {
-    [JsonConstructor]
     private Document()
     {
     }
@@ -18,7 +16,7 @@ public class Document : Entity
     }
 
     public DocumentType DocumentType { get; private set; }
-    public DateTime ExpiryDate { get; }
+    private DateTime ExpiryDate { get; }
 
     public static Document Create(DocumentType documentType, DateTime expiryDate)
     {

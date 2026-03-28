@@ -7,18 +7,33 @@ package driver;
 service DriverService {
   rpc GetDriverInfo (GetDriverInfoRequest) returns (DriverInfoResponse);
   
+  rpc AssignDriverToRide(AssignDriverToRideRequest) returns (DriverInfoResponse);
+  
+  rpc CancelRide(CancelRideRequest) returns (Empty);
+  
   rpc IsDriverAvailable (IsDriverAvailableRequest) returns (IsDriverAvailableResponse);
+}
+
+message Empty {
+}
+
+message CancelRideRequest {
+  string driver_id = 1;
 }
 
 message GetDriverInfoRequest {
   string driver_id = 1;
 }
 
+message AssignDriverToRideRequest {
+  string driver_id = 1;
+}
+
 message DriverInfoResponse {
   string driver_id = 1;
   string name = 2;
-  string vehicle_type = 4;
-  string license_plate = 5;
+  string status = 3;
+  double fare = 4;
 }
 
 message IsDriverAvailableRequest {

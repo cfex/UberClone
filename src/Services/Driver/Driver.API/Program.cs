@@ -1,4 +1,4 @@
-using System.Net;
+using Driver.API.Configuration;
 using Driver.API.Exceptions;
 using Driver.API.Grpc;
 using Driver.Application;
@@ -15,6 +15,14 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
+        builder.Services.AddOptions<DriverGrpcOptions>()
+            .Bind(builder.Configuration.GetSection(DriverGrpcOptions.SectionName))
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
+        var driverGrpcOptions = builder.Configuration.GetSection(DriverGrpcOptions.SectionName).Get<DriverGrpcOptions>()
+                                ?? throw new InvalidOperationException(
+                                    "DriverGrpc configuration is missing or invalid.");
+
         builder.Services.AddProblemDetails(configure =>
         {
             configure.CustomizeProblemDetails = context =>
@@ -27,7 +35,7 @@ public class Program
 
         builder.WebHost.ConfigureKestrel(options =>
         {
-            options.Listen(IPAddress.Any, 5001,
+            options.Listen(driverGrpcOptions.IpAddr, driverGrpcOptions.Port,
                 listenOptions => { listenOptions.Protocols = HttpProtocols.Http2; });
         });
         builder.Services.AddGrpc();

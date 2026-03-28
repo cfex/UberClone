@@ -17,7 +17,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <!-- Server-side: Generise C# klase za implementaciju servisa -->
         <Protobuf Include="Protos\driver.proto" GrpcServices="Server"/>
     </ItemGroup>
 

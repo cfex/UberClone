@@ -58,20 +58,6 @@ public class RideConfiguration : IEntityTypeConfiguration<Domain.Entities.Ride>
                 .IsRequired();
         });
 
-        builder.OwnsOne(x => x.ProposedPrice, proposedPriceBuilder =>
-        {
-            proposedPriceBuilder.Property(p => p.Amount)
-                .HasColumnName("proposed_price")
-                .HasDefaultValue(0.0)
-                .IsRequired();
-
-            proposedPriceBuilder.Property(p => p.Currency)
-                .HasColumnName("proposed_currency")
-                .HasConversion<string>()
-                .HasDefaultValue(Currency.USD)
-                .IsRequired();
-        });
-
         builder.Ignore("_domainEvents");
     }
 
