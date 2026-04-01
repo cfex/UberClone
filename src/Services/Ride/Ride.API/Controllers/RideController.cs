@@ -1,6 +1,8 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Ride.API.Dtos;
 using Ride.API.Services;
+using Ride.Application.Rides.Commands.RequestRide;
 
 namespace Ride.API.Controllers;
 
@@ -9,6 +11,7 @@ namespace Ride.API.Controllers;
 public class RideController : ControllerBase
 {
     private readonly IDriverGrpcClient _driverGrpcClient;
+    private readonly IMediator _mediator;
     private readonly ILogger<RideController> _logger;
 
     public RideController(
@@ -19,11 +22,15 @@ public class RideController : ControllerBase
         _logger = logger;
     }
 
-    [HttpGet]
-    public async Task<ActionResult<Unit>> Hello(
-        CancellationToken cancellationToken)
+    [HttpPost]
+    public async Task<IActionResult> RequireRide([FromBody] RideRequestDto request)
     {
-        return Ok();
+        var command = new RequestRideCommand(Guid.Parse(request.PassengerId), request.Destination);
+        await _mediator.Send(command);
+        
+        _logger.LogInformation("Ride is requested");
+        
+        return Ok(new { message = "Ride is requested" });
     }
 
     [HttpGet("driver/{driverId}")]

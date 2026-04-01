@@ -18,13 +18,10 @@ public class RequestRideCommandHandler : IRequestHandler<RequestRideCommand, Gui
 
     public async Task<Guid> Handle(RequestRideCommand request, CancellationToken cancellationToken)
     {
-        // call location service and calculate the price based on destination and pickup location
-        // get all available drivers
-        // publish an event
-
         // var pickupLocation = call location service 
         var location = RandomLocation();
-        var ride = Domain.Entities.Ride.Create(Guid.NewGuid(), request.PassengerId,
+        var passengerId = Guid.NewGuid(); // mock before passenger service
+        var ride = Domain.Entities.Ride.Create(Guid.NewGuid(), passengerId,
             Location.Create(location.Longitude, location.Latitude),
             request.Destination, RideStatus.Requested);
 

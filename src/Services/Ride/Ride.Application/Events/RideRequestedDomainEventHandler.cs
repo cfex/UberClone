@@ -12,9 +12,9 @@ public class RideRequestedDomainEventHandler : INotificationHandler<RideDomainEv
 
     public async Task Handle(RideDomainEvent<RideRequestedEvent> notification, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
 
         var domainEvent = notification.DomainEvent;
+        
         // call driver and passenger services if needed to create integration event
         // var driver = await _rideRepository.
         // _eventBus.PublishAsync()

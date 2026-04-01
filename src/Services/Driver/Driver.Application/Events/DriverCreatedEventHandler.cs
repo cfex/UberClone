@@ -9,16 +9,14 @@ namespace Driver.Application.Events;
 
 public class DriverCreatedEventHandler : INotificationHandler<DriverDomainEvent<DriverCreatedEvent>>
 {
-    private readonly IEventBus _bus;
-    private readonly IDriverRepository _driverRepository;
+    private readonly IEventBus _eventBus;
     private readonly ILogger<DriverCreatedEventHandler> _logger;
 
-    public DriverCreatedEventHandler(ILogger<DriverCreatedEventHandler> logger, IEventBus bus,
-        IDriverRepository driverRepository, IUnitOfWork unitOfWork)
+    public DriverCreatedEventHandler(ILogger<DriverCreatedEventHandler> logger, IEventBus eventBus,
+      IUnitOfWork unitOfWork)
     {
         _logger = logger;
-        _bus = bus;
-        _driverRepository = driverRepository;
+        _eventBus = eventBus;
     }
 
     public async Task Handle(DriverDomainEvent<DriverCreatedEvent> notification, CancellationToken cancellationToken)
@@ -34,6 +32,6 @@ public class DriverCreatedEventHandler : INotificationHandler<DriverDomainEvent<
             Role = domainEvent.role
         };
 
-        await _bus.PublishAsync(integrationEvent, cancellationToken);
+        await _eventBus.PublishAsync(integrationEvent, cancellationToken);
     }
 }
