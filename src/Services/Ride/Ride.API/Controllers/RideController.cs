@@ -39,8 +39,8 @@ public class RideController : ControllerBase
         {
             driverId = driverInfo.DriverId,
             name = driverInfo.Name,
-            vehicleType = driverInfo.VehicleType,
-            licensePlate = driverInfo.LicensePlate
+            status = driverInfo.Status,
+            fare = driverInfo.Fare
         });
     }
 

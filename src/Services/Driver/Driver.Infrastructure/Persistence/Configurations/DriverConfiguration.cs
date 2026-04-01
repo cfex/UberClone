@@ -1,10 +1,8 @@
-using System.Text.Json;
 using Driver.Domain.Entities;
 using Driver.Domain.Enums;
 using Driver.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Driver.Infrastructure.Persistence.Configurations;
 
@@ -19,43 +17,57 @@ public sealed class DriverConfiguration : IEntityTypeConfiguration<Domain.Entiti
             .HasColumnName("id")
             .ValueGeneratedNever();
 
-        builder.Property<DriverStatus>("Status")
+        builder.Property(x => x.Status)
             .HasColumnName("status")
             .HasConversion<string>()
             .IsRequired();
 
-        builder.Property<FullName>("FullName")
-            .HasColumnName("full_name")
-            .HasConversion(JsonConverter<FullName>())
-            .IsRequired();
+        builder.OwnsOne(x => x.FullName, fullName =>
+        {
+            fullName.Property(x => x.FirstName)
+                .HasColumnName("first_name")
+                .HasMaxLength(50)
+                .IsRequired();
 
-        builder.Property<Email>("Email")
-            .HasColumnName("email")
-            .HasConversion(JsonConverter<Email>())
-            .IsRequired();
+            fullName.Property(x => x.LastName)
+                .HasColumnName("last_name")
+                .HasMaxLength(50)
+                .IsRequired();
+        });
 
-        builder.Property<Document>("Document")
-            .HasColumnName("document")
-            .HasConversion(JsonConverter<Document>())
+        builder.OwnsOne(x => x.Email, email =>
+        {
+            email.Property(x => x.Value)
+                .HasColumnName("email")
+                .IsRequired();
+
+            email.Property(x => x.IsVerified)
+                .HasColumnName("is_verified")
+                .IsRequired();
+        });
+
+        builder.OwnsOne(x => x.Fare, fare =>
+        {
+            fare.Property(x => x.Amount)
+                .HasColumnName("fare_amount")
+                .IsRequired();
+
+            fare.Property(x => x.Currency)
+                .HasColumnName("fare_currency")
+                .HasConversion<string>()
+                .IsRequired();
+        });
+
+        builder.HasOne(x => x.Document)
+            .WithOne()
+            .HasForeignKey<Document>("driver_id")
             .IsRequired(false);
 
-        builder.Property<Vehicle>("Vehicle")
-            .HasColumnName("vehicle")
-            .HasConversion(JsonConverter<Vehicle>())
-            .IsRequired();
-
-        builder.Property<Money>("Fare")
-            .HasColumnName("fare")
-            .HasConversion(JsonConverter<Money>())
-            .IsRequired();
+        builder.HasOne(x => x.Vehicle)
+            .WithOne()
+            .HasForeignKey<Vehicle>("driver_id")
+            .IsRequired(false);
 
         builder.Ignore("_domainEvents");
-    }
-
-    private static ValueConverter<TValueObject, string> JsonConverter<TValueObject>()
-    {
-        return new ValueConverter<TValueObject, string>(
-            v => JsonSerializer.Serialize(v, (JsonSerializerOptions?)null),
-            v => JsonSerializer.Deserialize<TValueObject>(v, (JsonSerializerOptions?)null)!);
     }
 }

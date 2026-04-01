@@ -21,15 +21,25 @@ public static class DriverSeeder
                 f.Vehicle.Manufacturer(),
                 f.Vehicle.Model(),
                 f.Vehicle.Vin(),
-                "white",
-                f.Date.Future()
+                f.Commerce.Color(),
+                f.Date.Between(DateTime.UtcNow.AddMonths(-6), DateTime.UtcNow.AddYears(1)).ToUniversalTime()
             ));
 
         var documentFaker = new Faker<Document>()
             .CustomInstantiator(f => Document.Create(
+                Guid.NewGuid(),
                 f.PickRandom<DocumentType>(),
-                f.Date.Future(2)
+                f.Date.Future(2).ToUniversalTime()
             ));
+
+        var activeStatuses = new[]
+        {
+            DriverStatus.Offline,
+            DriverStatus.Online,
+            DriverStatus.Available,
+            DriverStatus.OnRide,
+            DriverStatus.Commuting
+        };
 
         var driverFaker = new Faker<Domain.Entities.Driver>()
             .CustomInstantiator(f =>
@@ -41,9 +51,9 @@ public static class DriverSeeder
                 return Domain.Entities.Driver.Create(
                     Guid.NewGuid(),
                     FullName.Create(firstName, lastName),
-                    Email.Create(email, true), // Verified email
-                    f.PickRandom<DriverStatus>(),
-                    Money.Create(f.Random.Double(5.0, 15.0), Currency.USD),
+                    Email.Create(email, true),
+                    f.PickRandom(activeStatuses),
+                    Money.Create(f.Random.Double(5.0, 25.0), f.PickRandom<Currency>()),
                     "driver",
                     documentFaker.Generate(),
                     vehicleFaker.Generate()

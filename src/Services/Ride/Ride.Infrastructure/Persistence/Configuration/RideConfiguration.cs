@@ -1,7 +1,5 @@
-using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Ride.Domain.Enums;
 
 namespace Ride.Infrastructure.Persistence.Configuration;
@@ -11,60 +9,64 @@ public class RideConfiguration : IEntityTypeConfiguration<Domain.Entities.Ride>
     public void Configure(EntityTypeBuilder<Domain.Entities.Ride> builder)
     {
         builder.ToTable("rides");
-        builder.HasAlternateKey(x => x.Id);
+        builder.HasKey(x => x.Id);
 
         builder.Property(x => x.Id)
             .HasColumnName("id")
             .ValueGeneratedNever();
 
-        builder.Property<RideStatus>("Status")
+        builder.Property(x => x.Status)
             .HasColumnName("status")
             .HasConversion<string>()
             .IsRequired();
 
-        builder.OwnsOne(x => x.PickupLocation, locationBuilder =>
-        {
-            locationBuilder.Property(l => l.Latitude)
-                .HasColumnName("pickup_latitude")
-                .IsRequired();
+        builder.Property(x => x.DriverId)
+            .HasColumnName("driver_id")
+            .IsRequired(false);
 
-            locationBuilder.Property(l => l.Longitude)
-                .HasColumnName("pickup_longitude")
-                .IsRequired();
+        builder.Property(x => x.PassengerId)
+            .HasColumnName("passenger_id")
+            .IsRequired();
+
+        builder.Property(x => x.CreatedAt)
+            .HasColumnName("created_at")
+            .HasDefaultValueSql("now()")
+            .IsRequired();
+
+        builder.Property(x => x.StartedAt)
+            .HasColumnName("started_at")
+            .IsRequired(false);
+
+        builder.Property(x => x.CompletedAt)
+            .HasColumnName("completed_at")
+            .IsRequired(false);
+
+        builder.OwnsOne(x => x.PickupLocation, loc =>
+        {
+            loc.Property(l => l.Latitude).HasColumnName("pickup_latitude").IsRequired();
+            loc.Property(l => l.Longitude).HasColumnName("pickup_longitude").IsRequired();
         });
 
-        builder.OwnsOne(x => x.Destination, locationBuilder =>
+        builder.OwnsOne(x => x.Destination, loc =>
         {
-            locationBuilder.Property(l => l.Latitude)
-                .HasColumnName("destination_latitude")
-                .IsRequired();
-
-            locationBuilder.Property(l => l.Longitude)
-                .HasColumnName("destination_longitude")
-                .IsRequired();
+            loc.Property(l => l.Latitude).HasColumnName("destination_latitude").IsRequired();
+            loc.Property(l => l.Longitude).HasColumnName("destination_longitude").IsRequired();
         });
 
-        builder.OwnsOne(x => x.Price, priceBuilder =>
+        builder.OwnsOne(x => x.Price, price =>
         {
-            priceBuilder.Property(p => p.Amount)
-                .HasColumnName("price")
+            price.Property(p => p.Amount)
+                .HasColumnName("price_amount")
                 .HasDefaultValue(0.0)
                 .IsRequired();
 
-            priceBuilder.Property(p => p.Currency)
-                .HasColumnName("currency")
+            price.Property(p => p.Currency)
+                .HasColumnName("price_currency")
                 .HasConversion<string>()
                 .HasDefaultValue(Currency.USD)
                 .IsRequired();
         });
 
         builder.Ignore("_domainEvents");
-    }
-
-    private static ValueConverter<TValueObject, string> JsonConverter<TValueObject>()
-    {
-        return new ValueConverter<TValueObject, string>(
-            v => JsonSerializer.Serialize(v, (JsonSerializerOptions?)null),
-            v => JsonSerializer.Deserialize<TValueObject>(v, (JsonSerializerOptions?)null)!);
     }
 }

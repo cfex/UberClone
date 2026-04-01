@@ -9,22 +9,28 @@ public class Document : Entity
     {
     }
 
-    private Document(DocumentType documentType, DateTime expiryDate) : base(Guid.NewGuid())
+    private Document(Guid Id,DocumentType documentType, DateTime expiryDate) : base(Id)
     {
         DocumentType = documentType;
         ExpiryDate = expiryDate;
     }
 
     public DocumentType DocumentType { get; private set; }
-    private DateTime ExpiryDate { get; }
+    public DateTime ExpiryDate { get; private set; }
 
-    public static Document Create(DocumentType documentType, DateTime expiryDate)
+    public static Document Create(Guid id,DocumentType documentType, DateTime expiryDate)
     {
-        return new Document(documentType, expiryDate);
+        return new Document(id,documentType, expiryDate);
     }
+    
 
     public bool IsExpired()
     {
-        return ExpiryDate < DateTime.Now;
+        return ExpiryDate < DateTime.UtcNow;
+    }
+    
+    public void ExtendDocument()
+    {
+        ExpiryDate = ExpiryDate.AddYears(1);
     }
 }

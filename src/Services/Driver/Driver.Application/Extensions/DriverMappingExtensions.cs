@@ -9,7 +9,9 @@ public static class DriverMappingExtensions
         return DriverResponseDto.Create(
             driver.Id,
             driver.FullName.FirstName,
-            driver.Email.Value
+            driver.Email.Value,
+            driver.Status.ToString(),
+            driver.Fare
         );
     }
 

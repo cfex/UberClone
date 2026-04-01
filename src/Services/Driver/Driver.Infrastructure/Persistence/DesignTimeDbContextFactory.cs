@@ -11,7 +11,7 @@ public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<DriverDbCo
         var optionsBuilder = new DbContextOptionsBuilder<DriverDbContext>();
 
         optionsBuilder.UseNpgsql(
-            "Host=localhost;Database=driver_db;Username=driver;Password=postgres"
+            "Host=localhost;Port=5433;Database=driver_db;Username=driver;Password=postgres"
         );
 
         return new DriverDbContext(optionsBuilder.Options, new NoOpPublisher());

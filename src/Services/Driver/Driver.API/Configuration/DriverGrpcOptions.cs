@@ -7,5 +7,5 @@ public sealed class DriverGrpcOptions
 {
     public const string SectionName = "DriverGrpc";
     [Required] public int Port { get; init; } = 0;
-    [Required] public IPAddress IpAddr { get; init; } = IPAddress.None;
+    [Required] public string IpAddr { get; init; } = "";
 }

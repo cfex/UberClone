@@ -22,7 +22,7 @@ public class Driver : AggregateRoot
         Document = document;
     }
 
-    public FullName FullName { get; }
+    public FullName FullName { get; } 
     public Email Email { get; private set; }
     public Money Fare { get; private set; }
     public Vehicle? Vehicle { get; private set; }

@@ -3,22 +3,8 @@ using Driver.Domain.Enums;
 
 namespace Driver.Domain.ValueObjects;
 
-public record Money
+public record Money(double Amount, Currency Currency)
 {
-    [JsonConstructor]
-    private Money()
-    {
-    }
-
-    private Money(double amount, Currency currency)
-    {
-        Amount = amount;
-        Currency = currency;
-    }
-
-    public double Amount { get; }
-    public Currency Currency { get; }
-
     public static Money Create(double amount, Currency currency)
     {
         if (amount <= 0) throw new ArgumentException("Amount must be greater than zero");

@@ -29,19 +29,26 @@ namespace Ride.Infrastructure.Migrations
                         .HasColumnName("id");
 
                     b.Property<DateTime?>("CompletedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("completed_at");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("now()");
 
-                    b.Property<Guid>("DriverId")
-                        .HasColumnType("uuid");
+                    b.Property<Guid?>("DriverId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("driver_id");
 
                     b.Property<Guid>("PassengerId")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("passenger_id");
 
                     b.Property<DateTime?>("StartedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("started_at");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -102,44 +109,18 @@ namespace Ride.Infrastructure.Migrations
                             b1.Property<Guid>("RideId")
                                 .HasColumnType("uuid");
 
-                            b1.Property<double>("_amount")
+                            b1.Property<double>("Amount")
                                 .ValueGeneratedOnAdd()
                                 .HasColumnType("double precision")
                                 .HasDefaultValue(0.0)
-                                .HasColumnName("price");
+                                .HasColumnName("price_amount");
 
-                            b1.Property<string>("_currency")
+                            b1.Property<string>("Currency")
                                 .IsRequired()
                                 .ValueGeneratedOnAdd()
                                 .HasColumnType("text")
                                 .HasDefaultValue("USD")
-                                .HasColumnName("currency");
-
-                            b1.HasKey("RideId");
-
-                            b1.ToTable("rides");
-
-                            b1.WithOwner()
-                                .HasForeignKey("RideId");
-                        });
-
-                    b.OwnsOne("Ride.Domain.ValueObjects.Money", "ProposedPrice", b1 =>
-                        {
-                            b1.Property<Guid>("RideId")
-                                .HasColumnType("uuid");
-
-                            b1.Property<double>("_amount")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("double precision")
-                                .HasDefaultValue(0.0)
-                                .HasColumnName("proposed_price");
-
-                            b1.Property<string>("_currency")
-                                .IsRequired()
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("text")
-                                .HasDefaultValue("USD")
-                                .HasColumnName("proposed_currency");
+                                .HasColumnName("price_currency");
 
                             b1.HasKey("RideId");
 
@@ -156,9 +137,6 @@ namespace Ride.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Price")
-                        .IsRequired();
-
-                    b.Navigation("ProposedPrice")
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

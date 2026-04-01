@@ -15,6 +15,8 @@ public sealed class DriverDbContext : DbContext
     }
 
     public DbSet<Domain.Entities.Driver> Drivers => Set<Domain.Entities.Driver>();
+    public DbSet<Domain.Entities.Document> Documents => Set<Domain.Entities.Document>();
+    public DbSet<Domain.Entities.Vehicle> Vehicles => Set<Domain.Entities.Vehicle>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

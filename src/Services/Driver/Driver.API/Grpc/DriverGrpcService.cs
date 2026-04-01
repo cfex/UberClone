@@ -1,4 +1,5 @@
 using Driver.Application.Drivers.Commands.GetDriverInfo;
+using Driver.Domain.Enums;
 using Grpc.Core;
 using MediatR;
 
@@ -6,29 +7,29 @@ namespace Driver.API.Grpc;
 
 public class DriverGrpcService : DriverService.DriverServiceBase
 {
-    private readonly ILogger<DriverGrpcService> _logger;
-    private readonly IMediator _mediator;
+private readonly ILogger<DriverGrpcService> _logger;
+private readonly IMediator _mediator;
 
-    public DriverGrpcService(ILogger<DriverGrpcService> logger, IMediator mediator)
+public DriverGrpcService(ILogger<DriverGrpcService> logger, IMediator mediator)
+{
+    _logger = logger;
+    _mediator = mediator;
+}
+
+public override async Task<DriverInfoResponse> GetDriverInfo(
+    GetDriverInfoRequest request,
+    ServerCallContext context)
+{
+    var driver = await _mediator.Send(new GetDriverInfoCommand(request.DriverId));
+
+    if (driver == null) throw new RpcException(new Status(StatusCode.NotFound, "Driver not found"));
+
+    return new DriverInfoResponse
     {
-        _logger = logger;
-        _mediator = mediator;
-    }
-
-    public override async Task<DriverInfoResponse> GetDriverInfo(
-        GetDriverInfoRequest request,
-        ServerCallContext context)
-    {
-        var driver = await _mediator.Send(new GetDriverInfoCommand(request.DriverId));
-
-        if (driver == null) throw new RpcException(new Status(StatusCode.NotFound, "Driver not found"));
-
-        return new DriverInfoResponse
-        {
-            DriverId = driver.Id.ToString(),
-            Name = driver.FirstName,
-            VehicleType = "",
-            LicensePlate = ""
+        DriverId = driver.Id.ToString(),
+        Name = driver.FirstName,
+        Status = driver.Status,
+            Fare = driver.Fare.Amount
         };
     }
 

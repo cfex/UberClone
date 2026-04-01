@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Text.Json.Serialization;
 using Ride.Domain.Enums;
 
@@ -5,13 +6,14 @@ namespace Ride.Domain.ValueObjects;
 
 public record Money
 {
-    [JsonConstructor]
     private Money()
     {
     }
 
-    private Money(double amount, Currency currency)
+    public Money(double amount, Currency currency)
     {
+        if (!Enum.IsDefined(typeof(Currency), currency))
+            throw new InvalidEnumArgumentException(nameof(currency), (int)currency, typeof(Currency));
         Amount = amount;
         Currency = currency;
     }

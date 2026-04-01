@@ -1,3 +1,4 @@
+using System.Net;
 using Driver.API.Configuration;
 using Driver.API.Exceptions;
 using Driver.API.Grpc;
@@ -23,7 +24,7 @@ public class Program
                                 ?? throw new InvalidOperationException(
                                     "DriverGrpc configuration is missing or invalid.");
 
-        builder.Services.AddProblemDetails(configure =>
+        builder.Services.AddProblemDetails(configure => 
         {
             configure.CustomizeProblemDetails = context =>
             {
@@ -35,7 +36,9 @@ public class Program
 
         builder.WebHost.ConfigureKestrel(options =>
         {
-            options.Listen(driverGrpcOptions.IpAddr, driverGrpcOptions.Port,
+            options.Listen(IPAddress.Any, 5000,
+                listenOptions => { listenOptions.Protocols = HttpProtocols.Http1; });
+            options.Listen(IPAddress.Any, driverGrpcOptions.Port,
                 listenOptions => { listenOptions.Protocols = HttpProtocols.Http2; });
         });
         builder.Services.AddGrpc();
@@ -56,12 +59,16 @@ public class Program
         app.MapControllers();
         app.UseHttpsRedirection();
 
+        await app.StartAsync();
+
         using (var scope = app.Services.CreateScope())
         {
             var context = scope.ServiceProvider.GetRequiredService<DriverDbContext>();
+            await context.Database.EnsureDeletedAsync();
+            await context.Database.EnsureCreatedAsync();
             await DriverSeeder.SeedDriversAsync(context);
         }
 
-        await app.RunAsync();
+        await app.WaitForShutdownAsync();
     }
 }

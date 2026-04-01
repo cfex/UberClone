@@ -20,7 +20,7 @@ public class Ride : AggregateRoot
         Status = status;
     }
 
-    public Guid DriverId { get; private set; }
+    public Guid? DriverId { get; private set; }
     public Guid PassengerId { get; init; }
     public Location PickupLocation { get; init; }
     public Location Destination { get; }
@@ -58,7 +58,7 @@ public class Ride : AggregateRoot
         Status = RideStatus.Completed;
         var now = DateTime.UtcNow;
         CompletedAt = now;
-        AddDomainEvent(RideCompletedEvent.Create(DriverId, PassengerId, Price, now));
+        AddDomainEvent(RideCompletedEvent.Create(DriverId!.Value, PassengerId, Price, now));
     }
 
     public void CancelRide()

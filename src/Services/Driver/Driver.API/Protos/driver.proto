@@ -17,8 +17,8 @@ message GetDriverInfoRequest {
 message DriverInfoResponse {
   string driver_id = 1;
   string name = 2;
-  string vehicle_type = 4;
-  string license_plate = 5;
+  string status = 4;
+  double fare = 5;
 }
 
 message IsDriverAvailableRequest {
