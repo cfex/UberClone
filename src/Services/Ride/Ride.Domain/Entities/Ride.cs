@@ -1,6 +1,7 @@
-using Driver.Domain.Primitives;
+using System;
 using Ride.Domain.Enums;
 using Ride.Domain.Events;
+using Ride.Domain.Primitives;
 using Ride.Domain.ValueObjects;
 
 namespace Ride.Domain.Entities;

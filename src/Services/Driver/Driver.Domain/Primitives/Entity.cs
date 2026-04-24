@@ -1,3 +1,5 @@
+using System;
+
 namespace Driver.Domain.Primitives;
 
 public class Entity

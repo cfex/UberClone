@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
-using System.Net;
 
-namespace Driver.API.Configuration;
+namespace Driver.Infrastructure.Configuration;
 
 public sealed class DriverGrpcOptions
 {

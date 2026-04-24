@@ -1,5 +1,5 @@
 using Driver.Application.Abstractions;
-using Driver.Application.IntegrationEvents;
+using Driver.Application.Events.IntegrationEvents;
 using Driver.Domain.Events;
 using MediatR;
 

@@ -1,4 +1,4 @@
-using Driver.Application.Dtos;
+using Driver.Application.Dto;
 using Driver.Application.Extensions;
 using Driver.Domain.Repositories;
 using MediatR;

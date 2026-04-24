@@ -1,26 +1,24 @@
-using Driver.API.Grpc;
 using Grpc.Core;
+using Microsoft.Extensions.Logging;
+using Ride.Application.Abstractions;
+using Ride.Application.Dto;
+using Ride.Domain.ValueObjects;
+using Ride.Infrastructure.Grpc;
 
-namespace Ride.API.Services;
+namespace Ride.Infrastructure.Services.gRPC;
 
-public interface IDriverGrpcClient
-{
-    Task<DriverInfoResponse?> GetDriverInfoAsync(string driverId);
-    Task<bool> IsDriverAvailableAsync(string driverId);
-}
-
-public class DriverGrpcClient : IDriverGrpcClient
+public class DriverGrpcService : IDriverGrpcClient
 {
     private readonly DriverService.DriverServiceClient _client;
-    private readonly ILogger<DriverGrpcClient> _logger;
+    private readonly ILogger<DriverGrpcService> _logger;
 
-    public DriverGrpcClient(DriverService.DriverServiceClient client, ILogger<DriverGrpcClient> logger)
+    public DriverGrpcService(DriverService.DriverServiceClient client, ILogger<DriverGrpcService> logger)
     {
         _client = client;
         _logger = logger;
     }
 
-    public async Task<DriverInfoResponse?> GetDriverInfoAsync(string driverId)
+    public async Task<DriverInfoDto?> GetDriverInfoAsync(string driverId)
     {
         try
         {
@@ -29,7 +27,12 @@ public class DriverGrpcClient : IDriverGrpcClient
             var request = new GetDriverInfoRequest { DriverId = driverId };
             var response = await _client.GetDriverInfoAsync(request);
 
-            return response;
+            return new DriverInfoDto(
+                response.DriverId,
+                response.Name,
+                response.Status,
+                response.Fare
+            );
         }
         catch (RpcException ex)
         {
@@ -55,5 +58,16 @@ public class DriverGrpcClient : IDriverGrpcClient
             _logger.LogError(ex, "gRPC error while checking driver availability: {Status}", ex.Status);
             return false;
         }
+    }
+
+    public async Task<List<DriverInfoDto>> GetAvailableDriversAsync(Location location)
+    {
+        _logger.LogInformation("Calling Driver gRPC service to get all available drivers");
+
+        var request = new AvailableDriversRequest
+            { Longitude = location.Longitude, Latitude = location.Latitude };
+        var response = await _client.GetAvailableDriversAsync(request);
+
+        return response.Drivers.Select(x => DriverInfoDto.Create(x.DriverId, x.Name, x.Status, x.Fare)).ToList();
     }
 }

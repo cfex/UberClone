@@ -1,4 +1,4 @@
-using Driver.Domain.Primitives;
+using Ride.Domain.Primitives;
 using Ride.Domain.ValueObjects;
 
 namespace Ride.Domain.Events;

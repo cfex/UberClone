@@ -20,8 +20,8 @@ public class RequestRideCommandHandler : IRequestHandler<RequestRideCommand, Gui
     {
         // var pickupLocation = call location service 
         var location = RandomLocation();
-        var passengerId = Guid.NewGuid(); // mock before passenger service
-        var ride = Domain.Entities.Ride.Create(Guid.NewGuid(), passengerId,
+
+        var ride = Domain.Entities.Ride.Create(Guid.NewGuid(), request.PassengerId,
             Location.Create(location.Longitude, location.Latitude),
             request.Destination, RideStatus.Requested);
 

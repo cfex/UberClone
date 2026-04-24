@@ -12,7 +12,6 @@
     <ItemGroup>
         <Folder Include="Rides\Commands\AcceptRide\"/>
         <Folder Include="Rides\Commands\CancelRide\"/>
-        <Folder Include="Rides\Queries\"/>
     </ItemGroup>
 
     <PropertyGroup>

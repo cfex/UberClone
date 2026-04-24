@@ -2,11 +2,12 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Driver.Domain\Driver.Domain.csproj"/>
-        <ProjectReference Include="..\..\..\Shared\Shared.Contracts\Shared.Contracts.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1"/>
+        <PackageReference Include="Grpc.AspNetCore" Version="2.76.0"/>
+        <PackageReference Include="Grpc.Net.Client" Version="2.76.0"/>
         <PackageReference Include="MediatR" Version="14.1.0"/>
         <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.3"/>
     </ItemGroup>

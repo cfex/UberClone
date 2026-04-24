@@ -1,5 +1,5 @@
 using Driver.Application.Abstractions;
-using Driver.Application.IntegrationEvents;
+using Driver.Application.Events.IntegrationEvents;
 using Driver.Domain.Events;
 using Driver.Domain.Repositories;
 using MediatR;
@@ -13,7 +13,7 @@ public class DriverCreatedEventHandler : INotificationHandler<DriverDomainEvent<
     private readonly ILogger<DriverCreatedEventHandler> _logger;
 
     public DriverCreatedEventHandler(ILogger<DriverCreatedEventHandler> logger, IEventBus eventBus,
-      IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork)
     {
         _logger = logger;
         _eventBus = eventBus;

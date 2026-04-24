@@ -1,4 +1,4 @@
-namespace Driver.Application.IntegrationEvents;
+namespace Driver.Application.Events.IntegrationEvents;
 
 public class DriverStatusChangedIntegrationEvent
 {

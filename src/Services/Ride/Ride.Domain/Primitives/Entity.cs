@@ -1,4 +1,6 @@
-namespace Driver.Domain.Primitives;
+using System;
+
+namespace Ride.Domain.Primitives;
 
 public class Entity
 {

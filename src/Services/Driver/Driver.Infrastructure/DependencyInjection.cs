@@ -3,6 +3,7 @@ using Driver.Application.Abstractions;
 using Driver.Domain.Events;
 using Driver.Domain.Repositories;
 using Driver.Infrastructure.Configuration;
+using Driver.Infrastructure.Grpc;
 using Driver.Infrastructure.MessageQueue;
 using Driver.Infrastructure.Persistence;
 using Driver.Infrastructure.Repositories;
@@ -23,6 +24,24 @@ public static class DependencyInjection
         {
             options.UseNpgsql(configuration.GetConnectionString("DriverDbConnectionString"));
         });
+
+        services.AddGrpc();
+
+        services.AddOptions<DriverGrpcOptions>()
+            .Bind(configuration.GetSection(DriverGrpcOptions.SectionName))
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
+
+        var driverGrpcOptions = configuration.GetSection(DriverGrpcOptions.SectionName).Get<DriverGrpcOptions>()
+                                ?? throw new InvalidOperationException(
+                                    "DriverGrpc configuration is missing or invalid.");
+
+        services.AddGrpcClient<DriverService.DriverServiceClient>(options =>
+        {
+            options.Address = new Uri($"http://{driverGrpcOptions.IpAddr}:{driverGrpcOptions.Port}");
+        });
+
+        // services.AddScoped<IDriverGrpcClient, DriverGrpcClient>();
 
         services.AddScoped<IDriverRepository, DriverRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();

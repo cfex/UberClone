@@ -1,4 +1,9 @@
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Driver.Application.Events;
+using Driver.Domain.Entities;
 using Driver.Domain.Primitives;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -15,8 +20,8 @@ public sealed class DriverDbContext : DbContext
     }
 
     public DbSet<Domain.Entities.Driver> Drivers => Set<Domain.Entities.Driver>();
-    public DbSet<Domain.Entities.Document> Documents => Set<Domain.Entities.Document>();
-    public DbSet<Domain.Entities.Vehicle> Vehicles => Set<Domain.Entities.Vehicle>();
+    public DbSet<Document> Documents => Set<Document>();
+    public DbSet<Vehicle> Vehicles => Set<Vehicle>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

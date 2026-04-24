@@ -1,7 +1,7 @@
-using Driver.Domain.Primitives;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Ride.Application.Events;
+using Ride.Domain.Primitives;
 
 namespace Ride.Infrastructure.Persistence;
 

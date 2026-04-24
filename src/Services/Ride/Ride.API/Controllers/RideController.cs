@@ -1,8 +1,8 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Ride.API.Dtos;
-using Ride.API.Services;
 using Ride.Application.Rides.Commands.RequestRide;
+using Ride.Application.Rides.Queries;
 
 namespace Ride.API.Controllers;
 
@@ -10,15 +10,14 @@ namespace Ride.API.Controllers;
 [Route("api/[controller]")]
 public class RideController : ControllerBase
 {
-    private readonly IDriverGrpcClient _driverGrpcClient;
-    private readonly IMediator _mediator;
     private readonly ILogger<RideController> _logger;
+    private readonly IMediator _mediator;
 
     public RideController(
-        IDriverGrpcClient driverGrpcClient,
+        IMediator mediator,
         ILogger<RideController> logger)
     {
-        _driverGrpcClient = driverGrpcClient;
+        _mediator = mediator;
         _logger = logger;
     }
 
@@ -27,9 +26,9 @@ public class RideController : ControllerBase
     {
         var command = new RequestRideCommand(Guid.Parse(request.PassengerId), request.Destination);
         await _mediator.Send(command);
-        
+
         _logger.LogInformation("Ride is requested");
-        
+
         return Ok(new { message = "Ride is requested" });
     }
 
@@ -38,9 +37,11 @@ public class RideController : ControllerBase
     {
         _logger.LogInformation("Getting driver info for: {DriverId}", driverId);
 
-        var driverInfo = await _driverGrpcClient.GetDriverInfoAsync(driverId);
+        var command = new GetDriverQuery(Guid.Parse(driverId));
+        var driverInfo = await _mediator.Send(command);
 
-        if (driverInfo == null) return NotFound(new { message = "Driver not found or service unavailable" });
+        if (driverInfo is null)
+            throw new Exception($"Driver {driverId} not found");
 
         return Ok(new
         {
@@ -49,15 +50,5 @@ public class RideController : ControllerBase
             status = driverInfo.Status,
             fare = driverInfo.Fare
         });
-    }
-
-    [HttpGet("driver/{driverId}/available")]
-    public async Task<IActionResult> CheckDriverAvailability(string driverId)
-    {
-        _logger.LogInformation("Checking availability for driver: {DriverId}", driverId);
-
-        var isAvailable = await _driverGrpcClient.IsDriverAvailableAsync(driverId);
-
-        return Ok(new { driverId, isAvailable });
     }
 }

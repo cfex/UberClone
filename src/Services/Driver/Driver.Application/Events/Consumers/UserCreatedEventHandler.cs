@@ -1,9 +1,9 @@
-using Driver.Application.IntegrationEvents;
+using Driver.Application.Events.IntegrationEvents;
 using Driver.Domain.Enums;
 using Driver.Domain.Repositories;
 using Driver.Domain.ValueObjects;
 
-namespace Driver.Application.Consumers;
+namespace Driver.Application.Events.Consumers;
 
 public class UserCreatedEventHandler
 {
