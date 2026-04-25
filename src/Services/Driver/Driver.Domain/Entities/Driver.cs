@@ -22,12 +22,13 @@ public class Driver : AggregateRoot
         Document = document;
     }
 
-    public FullName FullName { get; } 
+    public FullName FullName { get; }
     public Email Email { get; private set; }
     public Money Fare { get; private set; }
     public Vehicle? Vehicle { get; private set; }
     public DriverStatus Status { get; private set; }
     public Document? Document { get; private set; }
+    public Location? LastKnownLocation { get; private set; }
 
     public static Driver Create(Guid id, FullName fullName, Email email, DriverStatus status, Money fare,
         string role,
@@ -107,6 +108,11 @@ public class Driver : AggregateRoot
             throw new Exception("Driver is not on the ride");
         AddDomainEvent(DriverStatusChangedEvent.Create(Id, Status, DriverStatus.Offline));
         Status = DriverStatus.Available;
+    }
+
+    public void UpdateCurrentLocation(Location location)
+    {
+        LastKnownLocation = location;
     }
 
     public override string ToString()

@@ -1,6 +1,6 @@
 using Driver.Application;
 using Driver.Application.Abstractions;
-using Driver.Domain.Events;
+using Driver.Application.Events.IntegrationEvents;
 using Driver.Domain.Repositories;
 using Driver.Infrastructure.Configuration;
 using Driver.Infrastructure.Grpc;
@@ -70,23 +70,13 @@ public static class DependencyInjection
             x.ListenToRabbitQueue("user-created-events")
                 .UseForReplies()
                 .UseDurableInbox();
-            x.ListenToRabbitQueue("ride-request-events")
-                .UseForReplies()
-                .UseDurableInbox();
 
-            x.PublishMessage<DriverStatusChangedEvent>()
-                .ToRabbitExchange("driver_events", ex =>
-                {
-                    ex.ExchangeType = ExchangeType.Topic;
-                    ex.IsDurable = true;
-                    ex.BindQueue("driver-events-queue");
-                });
-            x.PublishMessage<DriverCreatedEvent>()
+            x.PublishMessage<DriverStatusChangedIntegrationEvent>()
                 .ToRabbitExchange("driver-events", ex =>
                 {
                     ex.ExchangeType = ExchangeType.Topic;
                     ex.IsDurable = true;
-                    ex.BindQueue("driver-events-queue");
+                    ex.BindQueue("driver-status-queue");
                 });
             x.Discovery.IncludeAssembly(typeof(AssemblyReference).Assembly);
         });

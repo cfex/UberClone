@@ -1,4 +1,3 @@
-using System;
 using Ride.Domain.Enums;
 using Ride.Domain.Events;
 using Ride.Domain.Primitives;
@@ -36,7 +35,8 @@ public class Ride : AggregateRoot
     {
         var ride = new Ride(driverId, passengerId, pickupLocation, destination, status);
 
-        ride.AddDomainEvent(RideRequestedEvent.Create(ride.PassengerId, ride.PickupLocation, ride.Destination));
+        ride.AddDomainEvent(RideRequestedEvent.Create(ride.Id, ride.PassengerId, ride.PickupLocation,
+            ride.Destination));
 
         return ride;
     }

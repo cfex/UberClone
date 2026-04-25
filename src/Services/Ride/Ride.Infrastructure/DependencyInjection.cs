@@ -1,7 +1,9 @@
+using System.Reflection.Metadata;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Ride.Application.Abstractions;
+using Ride.Application.Events.IntegrationEvents;
 using Ride.Domain.Repositories;
 using Ride.Infrastructure.Configuration;
 using Ride.Infrastructure.Grpc;
@@ -35,35 +37,26 @@ public static class DependencyInjection
         {
             x.Policies.DisableConventionalLocalRouting();
             x.UseRabbitMq(rabbit =>
-            {
-                rabbit.HostName = rabbitMqOptions.Host;
-                rabbit.VirtualHost = rabbitMqOptions.VHost;
-                rabbit.UserName = rabbitMqOptions.Username;
-                rabbit.Password = rabbitMqOptions.Password;
-            }).AutoProvision();
+                {
+                    rabbit.HostName = rabbitMqOptions.Host;
+                    rabbit.VirtualHost = rabbitMqOptions.VHost;
+                    rabbit.UserName = rabbitMqOptions.Username;
+                    rabbit.Password = rabbitMqOptions.Password;
+                }).AutoProvision()
+                .ConfigureSenders(opts => opts.UseDurableOutbox());
 
-            x.ListenToRabbitQueue("driver-status-events")
+            x.ListenToRabbitQueue("driver-status-queue")
                 .UseForReplies()
                 .UseDurableInbox();
-            // x.ListenToRabbitQueue("driver-request-events")
-            //     .UseForReplies()
-            //     .UseDurableInbox();
 
-            // x.PublishMessage<DriverStatusChangedEvent>()
-            //     .ToRabbitExchange("driver_events", ex =>
-            //     {
-            //         ex.ExchangeType = ExchangeType.Topic;
-            //         ex.IsDurable = true;
-            //         ex.BindQueue("driver-events-queue");
-            //     });
-            // x.PublishMessage<DriverCreatedEvent>()
-            //     .ToRabbitExchange("driver-events", ex =>
-            //     {
-            //         ex.ExchangeType = ExchangeType.Topic;
-            //         ex.IsDurable = true;
-            //         ex.BindQueue("driver-events-queue");
-            //     });
-            // x.Discovery.IncludeAssembly(typeof(AssemblyReference).Assembly);
+            x.PublishMessage<RideRequestedDispatchEvent>()
+                .ToRabbitExchange("ride-requests", ex =>
+                {
+                    ex.ExchangeType = ExchangeType.Topic;
+                    ex.IsDurable = true;
+                    ex.BindQueue("ride-requests-queue");
+                });
+            x.Discovery.IncludeAssembly(typeof(AssemblyReference).Assembly);
         });
 
         var driverGrpcAddress = configuration["GrpcServices:DriverService"] ?? "http://localhost:5001";

@@ -7,6 +7,7 @@ using Driver.Infrastructure.Persistence;
 using Driver.Infrastructure.Seeding;
 using Driver.Infrastructure.Services.gRPC.Driver;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.EntityFrameworkCore;
 
 namespace Driver.API;
 
@@ -59,8 +60,7 @@ public class Program
         using (var scope = app.Services.CreateScope())
         {
             var context = scope.ServiceProvider.GetRequiredService<DriverDbContext>();
-            await context.Database.EnsureDeletedAsync();
-            await context.Database.EnsureCreatedAsync();
+            await context.Database.MigrateAsync();
             await DriverSeeder.SeedDriversAsync(context);
         }
 

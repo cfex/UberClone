@@ -16,9 +16,8 @@ public class UserCreatedEventHandler
         _driverRepository = driverRepository;
     }
 
-    public async Task Handle(UserCreatedIntegrationEvent message)
+    public async Task Handle(DriverCreatedIntegrationEvent message)
     {
-        await _unitOfWork.BeginTransactionAsync();
         if (!message.Role.ToLower().Equals("driver")) return;
 
         var existingDriver = await _driverRepository.GetByEmail(message.Email);
@@ -34,6 +33,6 @@ public class UserCreatedEventHandler
         );
 
         await _driverRepository.CreateAsync(driver);
-        await _unitOfWork.CommitTransactionAsync();
+        await _unitOfWork.SaveChangesAsync();
     }
 }

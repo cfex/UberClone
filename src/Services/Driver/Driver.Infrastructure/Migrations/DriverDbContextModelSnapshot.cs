@@ -165,6 +165,31 @@ namespace Driver.Infrastructure.Migrations
                                 .HasForeignKey("DriverId");
                         });
 
+                    b.OwnsOne("Driver.Domain.ValueObjects.Location", "LastKnownLocation", b1 =>
+                        {
+                            b1.Property<Guid>("DriverId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<double>("Latitude")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("double precision")
+                                .HasDefaultValue(0.0)
+                                .HasColumnName("latitude");
+
+                            b1.Property<double>("Longitude")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("double precision")
+                                .HasDefaultValue(0.0)
+                                .HasColumnName("longitude");
+
+                            b1.HasKey("DriverId");
+
+                            b1.ToTable("drivers");
+
+                            b1.WithOwner()
+                                .HasForeignKey("DriverId");
+                        });
+
                     b.OwnsOne("Driver.Domain.ValueObjects.Money", "Fare", b1 =>
                         {
                             b1.Property<Guid>("DriverId")
@@ -195,6 +220,8 @@ namespace Driver.Infrastructure.Migrations
 
                     b.Navigation("FullName")
                         .IsRequired();
+
+                    b.Navigation("LastKnownLocation");
                 });
 
             modelBuilder.Entity("Driver.Domain.Entities.Vehicle", b =>

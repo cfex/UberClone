@@ -1,6 +1,4 @@
 using Driver.Domain.Entities;
-using Driver.Domain.Enums;
-using Driver.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -67,6 +65,18 @@ public sealed class DriverConfiguration : IEntityTypeConfiguration<Domain.Entiti
             .WithOne()
             .HasForeignKey<Vehicle>("driver_id")
             .IsRequired(false);
+
+        builder.OwnsOne(x => x.LastKnownLocation, lastKnownLocation =>
+        {
+            lastKnownLocation.Property(x => x.Latitude)
+                .HasColumnName("latitude")
+                .IsRequired()
+                .HasDefaultValue(0.0);
+            lastKnownLocation.Property(x => x.Longitude)
+                .HasColumnName("longitude")
+                .IsRequired()
+                .HasDefaultValue(0.0);
+        });
 
         builder.Ignore("_domainEvents");
     }

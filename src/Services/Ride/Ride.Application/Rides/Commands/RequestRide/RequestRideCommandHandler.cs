@@ -20,10 +20,13 @@ public class RequestRideCommandHandler : IRequestHandler<RequestRideCommand, Gui
     {
         // var pickupLocation = call location service 
         var location = RandomLocation();
+        var destination = RandomLocation();
 
-        var ride = Domain.Entities.Ride.Create(Guid.NewGuid(), request.PassengerId,
+        var ride = Domain.Entities.Ride.Create(Guid.NewGuid(),
+            request.PassengerId,
             Location.Create(location.Longitude, location.Latitude),
-            request.Destination, RideStatus.Requested);
+            Location.Create(destination.Longitude, destination.Latitude),
+            RideStatus.Requested);
 
 
         await _rideRepository.CreateAsync(ride, cancellationToken);

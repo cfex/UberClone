@@ -1,5 +1,6 @@
 using Driver.Domain.Enums;
 using Driver.Domain.Repositories;
+using Driver.Domain.ValueObjects;
 using Driver.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -47,5 +48,21 @@ public sealed class DriverRepository : IDriverRepository
     public async Task<List<Domain.Entities.Driver>> GetAllDrivers(CancellationToken cancellation = default)
     {
         return await _dbContext.Drivers.AsNoTracking().ToListAsync(cancellation);
+    }
+
+    public async Task<List<Domain.Entities.Driver>> GetAvailableDriversInArea(Location passengerLocation,
+        CancellationToken cancellation = default)
+    {
+        const double radiusInKm = 5.0;
+
+        var availableDrivers = await _dbContext.Drivers
+            .Where(x => x.Status == DriverStatus.Available && x.LastKnownLocation != null)
+            .Take(10)
+            .AsNoTracking()
+            .ToListAsync(cancellation);
+
+        return availableDrivers
+            .Where(driver => driver.LastKnownLocation!.DistanceInKilometersTo(passengerLocation) <= radiusInKm)
+            .ToList();
     }
 }

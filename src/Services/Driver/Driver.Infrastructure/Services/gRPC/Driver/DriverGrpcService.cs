@@ -61,7 +61,8 @@ public class DriverGrpcService : DriverService.DriverServiceBase
         _logger.LogInformation("Getting available drivers near location: ({Latitude}, {Longitude})",
             request.Latitude, request.Longitude);
 
-        var drivers = await _driverRepository.GetAllByStatus(DriverStatus.Available);
+        var passengerLocation = Domain.ValueObjects.Location.Create(request.Longitude, request.Latitude);
+        var drivers = await _driverRepository.GetAvailableDriversInArea(passengerLocation);
 
         var response = new AvailableDriversList();
 

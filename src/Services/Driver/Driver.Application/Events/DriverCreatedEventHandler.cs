@@ -23,7 +23,7 @@ public class DriverCreatedEventHandler : INotificationHandler<DriverDomainEvent<
     {
         var domainEvent = notification.DomainEvent;
 
-        var integrationEvent = new UserCreatedIntegrationEvent
+        var integrationEvent = new DriverCreatedIntegrationEvent
         {
             UserId = domainEvent.driverId,
             FirstName = domainEvent.fullName.FirstName,

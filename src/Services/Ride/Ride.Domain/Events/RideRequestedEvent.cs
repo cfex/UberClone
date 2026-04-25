@@ -6,12 +6,14 @@ namespace Ride.Domain.Events;
 public record RideRequestedEvent(
     Guid EventId,
     DateTime OccurredOn,
+    Guid RideId,
     Guid passengerId,
     Location pickupLocation,
     Location destination) : IDomainEvent
 {
-    public static RideRequestedEvent Create(Guid passengerId, Location pickupLocation, Location destination)
+    public static RideRequestedEvent Create(Guid rideId, Guid passengerId, Location pickupLocation,
+        Location destination)
     {
-        return new RideRequestedEvent(Guid.NewGuid(), DateTime.Now, passengerId, pickupLocation, destination);
+        return new RideRequestedEvent(Guid.NewGuid(), DateTime.Now, rideId, passengerId, pickupLocation, destination);
     }
 }

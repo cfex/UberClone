@@ -1,5 +1,6 @@
 using MediatR;
 using Ride.Application.Abstractions;
+using Ride.Application.Events.IntegrationEvents;
 using Ride.Domain.Events;
 
 namespace Ride.Application.Events;
@@ -19,9 +20,19 @@ public class RideRequestedDomainEventHandler : INotificationHandler<RideDomainEv
     {
         var domainEvent = notification.DomainEvent;
 
-        // call driver and passenger services if needed to create integration event
-        // var availableDriver = _driverGrpcClient.
+        var availableDriver = await _driverGrpcClient.GetAvailableDriversAsync(domainEvent.pickupLocation);
+        var driverIds = availableDriver.Select(x => Guid.Parse(x.DriverId)).ToList();
 
-        // _eventBus.PublishAsync()
+        var integrationEvent = new RideRequestedDispatchEvent
+        {
+            RideId = domainEvent.RideId,
+            Destination = domainEvent.destination,
+            Location = domainEvent.pickupLocation,
+            DriverIds = driverIds,
+            RequestedAt = DateTime.UtcNow,
+            CreatedAt = domainEvent.OccurredOn
+        };
+
+        await _eventBus.PublishAsync(integrationEvent, cancellationToken);
     }
 }

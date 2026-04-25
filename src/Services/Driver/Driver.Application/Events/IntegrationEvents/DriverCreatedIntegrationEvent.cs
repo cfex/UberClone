@@ -1,6 +1,6 @@
 namespace Driver.Application.Events.IntegrationEvents;
 
-public class UserCreatedIntegrationEvent
+public class DriverCreatedIntegrationEvent
 {
     public Guid UserId { get; set; }
     public string FirstName { get; set; }
