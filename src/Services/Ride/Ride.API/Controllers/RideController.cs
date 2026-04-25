@@ -1,6 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Ride.API.Dtos;
+using Ride.API.Dto;
 using Ride.Application.Rides.Commands.RequestRide;
 using Ride.Application.Rides.Queries;
 
@@ -22,14 +22,28 @@ public class RideController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> RequireRide([FromBody] RideRequestDto request)
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> RequireRide([FromBody] CreateRideRequestDto request,
+        CancellationToken cancellationToken)
     {
         var command = new RequestRideCommand(Guid.Parse(request.PassengerId), request.Destination);
-        await _mediator.Send(command);
+        var response = await _mediator.Send(command, cancellationToken);
 
         _logger.LogInformation("Ride is requested");
 
-        return Ok(new { message = "Ride is requested" });
+        return CreatedAtAction(nameof(GetDriverInfo), new { id = response }, response);
+    }
+
+    [HttpGet("{rideId}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<RideDetailsDto>> GetRideInfo(string rideId, CancellationToken cancellationToken)
+    {
+        var command = new GetRideDetailsQuery(Guid.Parse(rideId));
+        var rideDetails = await _mediator.Send(command, cancellationToken);
+
+        return Ok(rideDetails);
     }
 
     [HttpGet("driver/{driverId}")]

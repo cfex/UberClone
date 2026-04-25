@@ -2,7 +2,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Driver.API.Exceptions;
+namespace Ride.API.Exceptions;
 
 internal sealed class GlobalExceptionHandler(
     IProblemDetailsService problemDetailsService,
@@ -11,7 +11,7 @@ internal sealed class GlobalExceptionHandler(
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception,
         CancellationToken cancellationToken)
     {
-        logger.LogError(exception, "Unhandled exception occured");
+        logger.LogError(exception, "Unhandled exception occurred");
 
         var problemDetails = exception switch
         {

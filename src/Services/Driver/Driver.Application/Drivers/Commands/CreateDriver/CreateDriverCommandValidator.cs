@@ -1,24 +1,25 @@
-using Driver.Application.Dtos;
 using FluentValidation;
 
-namespace Driver.Application.Validators;
+namespace Driver.Application.Drivers.Commands.CreateDriver;
 
-internal sealed class CreateDriverRequestDtoValidator : AbstractValidator<CreateDriverRequestDto>
+public sealed class CreateDriverCommandValidator : AbstractValidator<CreateDriverCommand>
 {
-    public CreateDriverRequestDtoValidator()
+    public CreateDriverCommandValidator()
     {
         RuleFor(x => x.Email)
             .NotEmpty().WithMessage("Email is required")
             .EmailAddress().WithMessage("Invalid email format");
-        RuleFor(y => y.FirstName)
+
+        RuleFor(x => x.FirstName)
             .NotEmpty().WithMessage("First name is required")
             .Length(2, 100).WithMessage("First name must be between 2 and 100 characters");
-        RuleFor(y => y.LastName)
+
+        RuleFor(x => x.LastName)
             .NotEmpty().WithMessage("Last name is required")
             .Length(2, 100).WithMessage("Last name must be between 2 and 100 characters");
+
         RuleFor(x => x.FareAmount)
-            .NotEmpty().WithMessage("FareAmount is required")
             .GreaterThan(0).WithMessage("FareAmount must be greater than 0")
-            .LessThan(100).WithMessage("FareAmount must be less than 100");
+            .LessThan(1000).WithMessage("FareAmount must be less than 1000");
     }
 }
