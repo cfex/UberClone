@@ -19,7 +19,6 @@ public sealed class DriverRepository : IDriverRepository
     {
         return await _dbContext.Drivers
             .Where(x => x.Id == id)
-            .AsNoTracking()
             .FirstOrDefaultAsync(cancellation);
     }
 
@@ -27,7 +26,6 @@ public sealed class DriverRepository : IDriverRepository
     {
         return await _dbContext.Drivers
             .Where(x => x.Email.Equals(email))
-            .AsNoTracking()
             .FirstOrDefaultAsync(cancellation);
     }
 
@@ -50,19 +48,30 @@ public sealed class DriverRepository : IDriverRepository
         return await _dbContext.Drivers.AsNoTracking().ToListAsync(cancellation);
     }
 
+    // NOTE: this will be moved to location service
     public async Task<List<Domain.Entities.Driver>> GetAvailableDriversInArea(Location passengerLocation,
         CancellationToken cancellation = default)
     {
         const double radiusInKm = 5.0;
 
-        var availableDrivers = await _dbContext.Drivers
-            .Where(x => x.Status == DriverStatus.Available && x.LastKnownLocation != null)
-            .Take(10)
+        var (latMin, latMax, lonMin, lonMax) = passengerLocation.BoundingBox(radiusInKm);
+
+        var candidates = await _dbContext.Drivers
+            .Where(x => x.Status == DriverStatus.Available
+                        && x.LastKnownLocation != null
+                        && x.LastKnownLocation.Latitude >= latMin
+                        && x.LastKnownLocation.Latitude <= latMax
+                        && x.LastKnownLocation.Longitude >= lonMin
+                        && x.LastKnownLocation.Longitude <= lonMax)
             .AsNoTracking()
             .ToListAsync(cancellation);
 
-        return availableDrivers
-            .Where(driver => driver.LastKnownLocation!.DistanceInKilometersTo(passengerLocation) <= radiusInKm)
+        return candidates
+            .Select(d => (driver: d, distance: d.LastKnownLocation!.DistanceInKilometersTo(passengerLocation)))
+            .Where(x => x.distance <= radiusInKm)
+            .OrderBy(x => x.distance)
+            .Take(20)
+            .Select(x => x.driver)
             .ToList();
     }
 }

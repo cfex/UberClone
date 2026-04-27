@@ -65,7 +65,7 @@ public class Driver : AggregateRoot
     public void GoOnline()
     {
         if (!Email.IsVerified) throw new Exception("Email is not verified");
-        if (Document != null && !Document.IsExpired()) throw new Exception("Document is expired");
+        if (Document != null && Document.IsExpired()) throw new Exception("Document is expired");
         if (Vehicle != null && !Vehicle.IsValid()) throw new Exception("Vehicle is not valid");
         if (Status == DriverStatus.OnRide) throw new Exception("Driver is busy");
 
@@ -106,7 +106,7 @@ public class Driver : AggregateRoot
     {
         if (Status != DriverStatus.Commuting && Status != DriverStatus.OnRide)
             throw new Exception("Driver is not on the ride");
-        AddDomainEvent(DriverStatusChangedEvent.Create(Id, Status, DriverStatus.Offline));
+        AddDomainEvent(DriverStatusChangedEvent.Create(Id, Status, DriverStatus.Available));
         Status = DriverStatus.Available;
     }
 

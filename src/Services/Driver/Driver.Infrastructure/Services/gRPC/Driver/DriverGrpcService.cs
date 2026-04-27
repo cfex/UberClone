@@ -1,5 +1,6 @@
 using Driver.Domain.Enums;
 using Driver.Domain.Repositories;
+using Driver.Domain.ValueObjects;
 using Driver.Infrastructure.Grpc;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
@@ -61,7 +62,8 @@ public class DriverGrpcService : DriverService.DriverServiceBase
         _logger.LogInformation("Getting available drivers near location: ({Latitude}, {Longitude})",
             request.Latitude, request.Longitude);
 
-        var passengerLocation = Domain.ValueObjects.Location.Create(request.Longitude, request.Latitude);
+        var passengerLocation = Location.Create(request.Longitude, request.Latitude);
+
         var drivers = await _driverRepository.GetAvailableDriversInArea(passengerLocation);
 
         var response = new AvailableDriversList();

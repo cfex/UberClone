@@ -19,27 +19,19 @@ public class RequestRideCommandHandler : IRequestHandler<RequestRideCommand, Gui
     public async Task<Guid> Handle(RequestRideCommand request, CancellationToken cancellationToken)
     {
         // var pickupLocation = call location service 
-        var location = RandomLocation();
-        var destination = RandomLocation();
+        var location = Location.RandomLocation();
+        var destination = Location.RandomLocation();
 
-        var ride = Domain.Entities.Ride.Create(Guid.NewGuid(),
+        var ride = Domain.Entities.Ride.Create(null,
             request.PassengerId,
             Location.Create(location.Longitude, location.Latitude),
             Location.Create(destination.Longitude, destination.Latitude),
-            RideStatus.Requested);
+            RideStatus.Requested, DateTime.UtcNow);
 
 
         await _rideRepository.CreateAsync(ride, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return ride.Id;
-    }
-
-    private static (double Latitude, double Longitude) RandomLocation()
-    {
-        var random = new Random();
-        var latitude = random.NextDouble() * 180 - 90;
-        var longitude = random.NextDouble() * 360 - 180;
-        return (latitude, longitude);
     }
 }

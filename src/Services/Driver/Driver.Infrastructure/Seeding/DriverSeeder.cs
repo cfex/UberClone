@@ -53,7 +53,7 @@ public static class DriverSeeder
                     FullName.Create(firstName, lastName),
                     Email.Create(email, true),
                     f.PickRandom(activeStatuses),
-                    Money.Create(f.Random.Double(5.0, 25.0), f.PickRandom<Currency>()),
+                    Money.Create(f.Random.Double(5, 1000.0), f.PickRandom<Currency>()),
                     "driver",
                     documentFaker.Generate(),
                     vehicleFaker.Generate()

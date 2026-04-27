@@ -1,4 +1,3 @@
-using System.Text.Json.Serialization;
 using Driver.Domain.Enums;
 
 namespace Driver.Domain.ValueObjects;

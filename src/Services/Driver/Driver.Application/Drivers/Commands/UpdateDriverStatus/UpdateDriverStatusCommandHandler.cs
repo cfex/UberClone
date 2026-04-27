@@ -31,7 +31,10 @@ internal sealed class UpdateDriverStatusCommandHandler : IRequestHandler<UpdateD
             case DriverStatusAction.GoAvailable:
             case DriverStatusAction.GoBusy:
             case DriverStatusAction.StartRide:
+                driver.StartRide();
+                break;
             case DriverStatusAction.StartCommuting:
+                driver.StartCommuting();
                 break;
             case DriverStatusAction.GoOffline:
                 driver.GoOffline();

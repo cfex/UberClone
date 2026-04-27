@@ -1,7 +1,7 @@
-using System.Reflection.Metadata;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Ride.Application;
 using Ride.Application.Abstractions;
 using Ride.Application.Events.IntegrationEvents;
 using Ride.Domain.Repositories;

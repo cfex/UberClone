@@ -11,13 +11,16 @@ public class Ride : AggregateRoot
     {
     }
 
-    public Ride(Guid driverId, Guid passengerId, Location pickupLocation, Location destination, RideStatus status)
+    private Ride(Guid? driverId, Guid passengerId, Location pickupLocation, Location destination, RideStatus status,
+        Money price, DateTime createdAt)
     {
         DriverId = driverId;
         PassengerId = passengerId;
         PickupLocation = pickupLocation;
         Destination = destination;
         Status = status;
+        Price = price;
+        CreatedAt = createdAt;
     }
 
     public Guid? DriverId { get; private set; }
@@ -30,10 +33,13 @@ public class Ride : AggregateRoot
     public DateTime? StartedAt { get; private set; }
     public DateTime? CompletedAt { get; private set; }
 
-    public static Ride Create(Guid driverId, Guid passengerId, Location pickupLocation, Location destination,
-        RideStatus status)
+    public static Ride Create(Guid? driverId, Guid passengerId, Location pickupLocation, Location destination,
+        RideStatus status, DateTime createdAt)
     {
-        var ride = new Ride(driverId, passengerId, pickupLocation, destination, status);
+        // Approximate price will be calculated in the driver service.
+        // When the driver accept the ride, the total price will be calculated based on he's fare and persisted.
+        var ridePrice = Money.Create(0, Currency.EUR);
+        var ride = new Ride(driverId, passengerId, pickupLocation, destination, status, ridePrice, createdAt);
 
         ride.AddDomainEvent(RideRequestedEvent.Create(ride.Id, ride.PassengerId, ride.PickupLocation,
             ride.Destination));

@@ -24,7 +24,7 @@ public class RideController : ControllerBase
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> RequireRide([FromBody] CreateRideRequestDto request,
+    public async Task<IActionResult> RequestRide([FromBody] CreateRideRequestDto request,
         CancellationToken cancellationToken)
     {
         var command = new RequestRideCommand(Guid.Parse(request.PassengerId), request.Destination);
@@ -32,7 +32,7 @@ public class RideController : ControllerBase
 
         _logger.LogInformation("Ride is requested");
 
-        return CreatedAtAction(nameof(GetDriverInfo), new { id = response }, response);
+        return CreatedAtAction(nameof(GetRideInfo), new { rideId = response }, response);
     }
 
     [HttpGet("{rideId}")]

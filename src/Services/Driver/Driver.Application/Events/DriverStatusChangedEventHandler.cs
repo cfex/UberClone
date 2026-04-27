@@ -21,9 +21,9 @@ public class DriverStatusChangedEventHandler : INotificationHandler<DriverDomain
 
         var integrationEvent = new DriverStatusChangedIntegrationEvent
         {
-            DriverId = domainEvent.driverId,
-            OldStatus = domainEvent.oldStatus.ToString(),
-            NewStatus = domainEvent.newStatus.ToString(),
+            DriverId = domainEvent.DriverId,
+            OldStatus = domainEvent.OldStatus.ToString(),
+            NewStatus = domainEvent.NewStatus.ToString(),
             OccurredOn = domainEvent.OccurredOn
         };
 

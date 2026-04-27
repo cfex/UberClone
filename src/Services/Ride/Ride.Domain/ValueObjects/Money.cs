@@ -1,5 +1,4 @@
 using System.ComponentModel;
-using System.Text.Json.Serialization;
 using Ride.Domain.Enums;
 
 namespace Ride.Domain.ValueObjects;
@@ -10,7 +9,7 @@ public record Money
     {
     }
 
-    public Money(double amount, Currency currency)
+    public Money(decimal amount, Currency currency)
     {
         if (!Enum.IsDefined(typeof(Currency), currency))
             throw new InvalidEnumArgumentException(nameof(currency), (int)currency, typeof(Currency));
@@ -18,10 +17,10 @@ public record Money
         Currency = currency;
     }
 
-    public double Amount { get; }
+    public decimal Amount { get; }
     public Currency Currency { get; }
 
-    public static Money Create(double amount, Currency currency)
+    public static Money Create(decimal amount, Currency currency)
     {
         if (amount <= 0) throw new ArgumentException("Amount must be greater than zero");
 
