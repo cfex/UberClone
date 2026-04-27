@@ -3,7 +3,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Ride.Application;
 using Ride.Application.Abstractions;
-using Ride.Application.Events.IntegrationEvents;
 using Ride.Domain.Repositories;
 using Ride.Infrastructure.Configuration;
 using Ride.Infrastructure.Grpc;
@@ -11,6 +10,7 @@ using Ride.Infrastructure.MessageQueue;
 using Ride.Infrastructure.Persistence;
 using Ride.Infrastructure.Repositories;
 using Ride.Infrastructure.Services.gRPC;
+using Shared.Contracts.IntegrationEvents.Ride;
 using Wolverine;
 using Wolverine.RabbitMQ;
 

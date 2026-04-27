@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Ride.Domain.Primitives;
+namespace Shared.Domain.Primitives;
 
 public class AggregateRoot : Entity
 {

@@ -1,7 +1,7 @@
 using Ride.Domain.Enums;
 using Ride.Domain.Events;
-using Ride.Domain.Primitives;
 using Ride.Domain.ValueObjects;
+using Shared.Domain.Primitives;
 
 namespace Ride.Domain.Entities;
 

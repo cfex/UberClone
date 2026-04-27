@@ -1,7 +1,7 @@
-using Driver.Application.Events.IntegrationEvents;
 using Driver.Domain.Enums;
 using Driver.Domain.Repositories;
 using Driver.Domain.ValueObjects;
+using Shared.Contracts.IntegrationEvents.Driver;
 
 namespace Driver.Application.Events.Consumers;
 
@@ -24,7 +24,7 @@ public class UserCreatedEventHandler
         if (existingDriver != null) return;
 
         var driver = Domain.Entities.Driver.Create(
-            message.UserId,
+            message.DriverId,
             FullName.Create(message.FirstName, message.LastName),
             Email.Create(message.Email),
             DriverStatus.New,

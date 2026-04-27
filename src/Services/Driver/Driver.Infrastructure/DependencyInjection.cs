@@ -1,6 +1,5 @@
 using Driver.Application;
 using Driver.Application.Abstractions;
-using Driver.Application.Events.IntegrationEvents;
 using Driver.Domain.Repositories;
 using Driver.Infrastructure.Configuration;
 using Driver.Infrastructure.Grpc;
@@ -10,6 +9,7 @@ using Driver.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Shared.Contracts.IntegrationEvents.Driver;
 using Wolverine;
 using Wolverine.RabbitMQ;
 

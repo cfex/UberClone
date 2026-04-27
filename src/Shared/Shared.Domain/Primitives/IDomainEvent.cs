@@ -1,5 +1,5 @@
 
-namespace Driver.Domain.Primitives;
+namespace Shared.Domain.Primitives;
 
 public interface IDomainEvent
 {

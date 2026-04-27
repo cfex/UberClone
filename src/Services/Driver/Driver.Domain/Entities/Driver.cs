@@ -1,7 +1,7 @@
 using Driver.Domain.Enums;
 using Driver.Domain.Events;
-using Driver.Domain.Primitives;
 using Driver.Domain.ValueObjects;
+using Shared.Domain.Primitives;
 
 namespace Driver.Domain.Entities;
 

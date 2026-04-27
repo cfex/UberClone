@@ -1,9 +1,9 @@
 using Driver.Application.Abstractions;
-using Driver.Application.Events.IntegrationEvents;
 using Driver.Domain.Events;
 using Driver.Domain.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Shared.Contracts.IntegrationEvents.Driver;
 
 namespace Driver.Application.Events;
 
@@ -25,11 +25,11 @@ public class DriverCreatedEventHandler : INotificationHandler<DriverDomainEvent<
 
         var integrationEvent = new DriverCreatedIntegrationEvent
         {
-            UserId = domainEvent.driverId,
-            FirstName = domainEvent.fullName.FirstName,
-            LastName = domainEvent.fullName.LastName,
-            Email = domainEvent.email.Value,
-            Role = domainEvent.role
+            DriverId = domainEvent.DriverId,
+            FirstName = domainEvent.FullName.FirstName,
+            LastName = domainEvent.FullName.LastName,
+            Email = domainEvent.Email.Value,
+            Role = domainEvent.Role
         };
 
         await _eventBus.PublishAsync(integrationEvent, cancellationToken);

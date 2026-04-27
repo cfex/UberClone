@@ -1,7 +1,7 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Ride.Application.Events;
-using Ride.Domain.Primitives;
+using Shared.Domain.Primitives;
 
 namespace Ride.Infrastructure.Persistence;
 

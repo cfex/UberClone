@@ -1,6 +1,6 @@
 using System;
 
-namespace Driver.Domain.Primitives;
+namespace Shared.Domain.Primitives;
 
 public class Entity
 {

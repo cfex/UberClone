@@ -1,16 +1,20 @@
 <Solution>
-  <Folder Name="/src/" />
-  <Folder Name="/src/Services/" />
-  <Folder Name="/src/Services/Driver/">
-    <Project Path="src/Services/Driver/Driver.API/Driver.API.csproj" />
-    <Project Path="src/Services/Driver/Driver.Application/Driver.Application.csproj" />
-    <Project Path="src/Services/Driver/Driver.Domain/Driver.Domain.csproj" />
-    <Project Path="src/Services/Driver/Driver.Infrastructure/Driver.Infrastructure.csproj" />
-  </Folder>
-  <Folder Name="/src/Services/Ride/">
-    <Project Path="src/Services/Ride/Ride.API/Ride.API.csproj" />
-    <Project Path="src/Services/Ride/Ride.Application/Ride.Application.csproj" />
-    <Project Path="src/Services/Ride/Ride.Domain/Ride.Domain.csproj" />
-    <Project Path="src/Services/Ride/Ride.Infrastructure/Ride.Infrastructure.csproj" />
-  </Folder>
+    <Folder Name="/src/"/>
+    <Folder Name="/src/Services/"/>
+    <Folder Name="/src/Services/Driver/">
+        <Project Path="src/Services/Driver/Driver.API/Driver.API.csproj"/>
+        <Project Path="src/Services/Driver/Driver.Application/Driver.Application.csproj"/>
+        <Project Path="src/Services/Driver/Driver.Domain/Driver.Domain.csproj"/>
+        <Project Path="src/Services/Driver/Driver.Infrastructure/Driver.Infrastructure.csproj"/>
+    </Folder>
+    <Folder Name="/src/Services/Ride/">
+        <Project Path="src/Services/Ride/Ride.API/Ride.API.csproj"/>
+        <Project Path="src/Services/Ride/Ride.Application/Ride.Application.csproj"/>
+        <Project Path="src/Services/Ride/Ride.Domain/Ride.Domain.csproj"/>
+        <Project Path="src/Services/Ride/Ride.Infrastructure/Ride.Infrastructure.csproj"/>
+    </Folder>
+    <Folder Name="/src/Shared/">
+        <Project Path="src/Shared/Shared.Domain/Shared.Domain.csproj"/>     <!-- NOVO -->
+        <Project Path="src/Shared/Shared.Contracts/Shared.Contracts.csproj"/>
+    </Folder>
 </Solution>

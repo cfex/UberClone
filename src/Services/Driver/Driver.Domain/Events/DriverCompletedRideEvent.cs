@@ -1,4 +1,4 @@
-using Driver.Domain.Primitives;
+using Shared.Domain.Primitives;
 
 namespace Driver.Domain.Events;
 

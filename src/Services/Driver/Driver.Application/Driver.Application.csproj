@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <ItemGroup>
+        <ProjectReference Include="..\..\..\Shared\Shared.Contracts\Shared.Contracts.csproj"/>
         <ProjectReference Include="..\Driver.Domain\Driver.Domain.csproj"/>
     </ItemGroup>
 

@@ -1,7 +1,7 @@
 using Driver.Application.Abstractions;
-using Driver.Application.Events.IntegrationEvents;
 using Driver.Domain.Events;
 using MediatR;
+using Shared.Contracts.IntegrationEvents.Driver;
 
 namespace Driver.Application.Events;
 

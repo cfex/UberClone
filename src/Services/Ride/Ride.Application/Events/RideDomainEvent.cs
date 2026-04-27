@@ -1,5 +1,5 @@
 using MediatR;
-using Ride.Domain.Primitives;
+using Shared.Domain.Primitives;
 
 namespace Ride.Application.Events;
 
