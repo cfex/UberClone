@@ -42,7 +42,9 @@ public static class DependencyInjection
                     rabbit.VirtualHost = rabbitMqOptions.VHost;
                     rabbit.UserName = rabbitMqOptions.Username;
                     rabbit.Password = rabbitMqOptions.Password;
-                }).AutoProvision()
+                    rabbit.Port = rabbitMqOptions.Port;
+                })
+                .AutoProvision()
                 .ConfigureSenders(opts => opts.UseDurableOutbox());
 
             x.ListenToRabbitQueue("driver-status-queue")

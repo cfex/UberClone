@@ -15,11 +15,11 @@ public sealed class RequestRideCommandValidator : AbstractValidator<RequestRideC
         RuleFor(x => x.Destination.Latitude)
             .InclusiveBetween(-90, 90)
             .WithMessage("Destination latitude must be between -90 and 90")
-            .When(x => x.Destination != null);
+            .When(x => true);
 
         RuleFor(x => x.Destination.Longitude)
             .InclusiveBetween(-180, 180)
             .WithMessage("Destination longitude must be between -180 and 180")
-            .When(x => x.Destination != null);
+            .When(x => true);
     }
 }

@@ -2,7 +2,6 @@ using Grpc.Core;
 using Microsoft.Extensions.Logging;
 using Ride.Application.Abstractions;
 using Ride.Application.Dto;
-using Ride.Domain.ValueObjects;
 using Ride.Infrastructure.Grpc;
 
 namespace Ride.Infrastructure.Services.gRPC;
@@ -60,12 +59,11 @@ public class DriverGrpcService : IDriverGrpcClient
         }
     }
 
-    public async Task<List<DriverInfoDto>> GetAvailableDriversAsync(Location location)
+    public async Task<List<DriverInfoDto>> GetAvailableDriversAsync(List<Guid> driverIds)
     {
         _logger.LogInformation("Calling Driver gRPC service to get all available drivers");
 
-        var request = new AvailableDriversRequest
-            { Longitude = location.Longitude, Latitude = location.Latitude };
+        var request = new AvailableDriversRequest { DriverId = { driverIds.Select(id => id.ToString()) } };
         var response = await _client.GetAvailableDriversAsync(request);
 
         return response.Drivers.Select(x => DriverInfoDto.Create(x.DriverId, x.Name, x.Status, x.Fare)).ToList();

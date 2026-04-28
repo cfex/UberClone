@@ -14,6 +14,7 @@ public record RideRequestedEvent(
     public static RideRequestedEvent Create(Guid rideId, Guid passengerId, Location pickupLocation,
         Location destination)
     {
-        return new RideRequestedEvent(Guid.NewGuid(), DateTime.Now, rideId, passengerId, pickupLocation, destination);
+        return new RideRequestedEvent(Guid.NewGuid(), DateTime.UtcNow, rideId, passengerId, pickupLocation,
+            destination);
     }
 }

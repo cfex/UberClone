@@ -1,5 +1,7 @@
 using Location.API.Exceptions;
 using Location.Application;
+using Location.Infrastructure;
+using Location.Infrastructure.Services.Grpc.Location;
 
 namespace Location.API;
 
@@ -20,6 +22,7 @@ public class Program
         builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
         builder.Services.AddOpenApi();
         builder.Services.AddLocationApplication(builder.Configuration);
+        builder.Services.AddLocationInfrastructure(builder.Configuration);
         builder.Services.AddControllers();
 
         var app = builder.Build();
@@ -27,6 +30,7 @@ public class Program
         if (app.Environment.IsDevelopment()) app.MapOpenApi();
 
         app.MapControllers();
+        app.MapGrpcService<LocationGrpcService>();
         app.UseHttpsRedirection();
 
         app.Run();

@@ -2,7 +2,7 @@ syntax = "proto3";
 
 option csharp_namespace = "Ride.Infrastructure.Grpc";
 
-package driver;
+package proto;
 
 service DriverService {
   rpc GetDriverInfo (GetDriverInfoRequest) returns (DriverResponse);
@@ -13,8 +13,7 @@ service DriverService {
 }
 
 message AvailableDriversRequest {
-  double longitude = 1;
-  double latitude = 2;
+  repeated string driver_id = 1;
 }
 
 message AvailableDriversList {

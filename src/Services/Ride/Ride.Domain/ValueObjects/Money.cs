@@ -9,20 +9,20 @@ public record Money
     {
     }
 
-    public Money(decimal amount, Currency currency)
+    public Money(double amount, Currency currency)
     {
-        if (!Enum.IsDefined(typeof(Currency), currency))
+        if (!Enum.IsDefined(currency))
             throw new InvalidEnumArgumentException(nameof(currency), (int)currency, typeof(Currency));
         Amount = amount;
         Currency = currency;
     }
 
-    public decimal Amount { get; }
+    public double Amount { get; }
     public Currency Currency { get; }
 
-    public static Money Create(decimal amount, Currency currency)
+    public static Money Create(double amount, Currency currency)
     {
-        if (amount <= 0) throw new ArgumentException("Amount must be greater than zero");
+        if (amount < 0) throw new ArgumentException("Amount must be greater or equal to zero");
 
         return new Money(amount, currency);
     }
