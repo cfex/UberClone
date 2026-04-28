@@ -1,6 +1,5 @@
 using Driver.Domain.Enums;
 using Driver.Domain.Repositories;
-using Driver.Domain.ValueObjects;
 using Driver.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,14 +21,14 @@ public sealed class DriverRepository : IDriverRepository
             .FirstOrDefaultAsync(cancellation);
     }
 
-    public async Task<Domain.Entities.Driver?> GetByEmail(string email, CancellationToken cancellation = default)
+    public async Task<Domain.Entities.Driver?> GetByEmailAsync(string email, CancellationToken cancellation = default)
     {
         return await _dbContext.Drivers
-            .Where(x => x.Email.Equals(email))
+            .Where(x => x.Email.Value.Equals(email))
             .FirstOrDefaultAsync(cancellation);
     }
 
-    public async Task<List<Domain.Entities.Driver>> GetAllByStatus(DriverStatus status,
+    public async Task<List<Domain.Entities.Driver>> GetAllByStatusAsync(DriverStatus status,
         CancellationToken cancellation = default)
     {
         return await _dbContext.Drivers
@@ -43,35 +42,16 @@ public sealed class DriverRepository : IDriverRepository
         await _dbContext.Drivers.AddAsync(driver, cancellation);
     }
 
-    public async Task<List<Domain.Entities.Driver>> GetAllDrivers(CancellationToken cancellation = default)
+    // TODO: Add pegination
+    public async Task<List<Domain.Entities.Driver>> GetAllDriversAsync(CancellationToken cancellation = default)
     {
         return await _dbContext.Drivers.AsNoTracking().ToListAsync(cancellation);
     }
 
-    // NOTE: this will be moved to location service
-    public async Task<List<Domain.Entities.Driver>> GetAvailableDriversInArea(Location passengerLocation,
+    // TODO: Add pegination
+    public async Task<List<Domain.Entities.Driver>> GetDriversByIdsAsync(List<Guid> driverIds,
         CancellationToken cancellation = default)
     {
-        const double radiusInKm = 5.0;
-
-        var (latMin, latMax, lonMin, lonMax) = passengerLocation.BoundingBox(radiusInKm);
-
-        var candidates = await _dbContext.Drivers
-            .Where(x => x.Status == DriverStatus.Available
-                        && x.LastKnownLocation != null
-                        && x.LastKnownLocation.Latitude >= latMin
-                        && x.LastKnownLocation.Latitude <= latMax
-                        && x.LastKnownLocation.Longitude >= lonMin
-                        && x.LastKnownLocation.Longitude <= lonMax)
-            .AsNoTracking()
-            .ToListAsync(cancellation);
-
-        return candidates
-            .Select(d => (driver: d, distance: d.LastKnownLocation!.DistanceInKilometersTo(passengerLocation)))
-            .Where(x => x.distance <= radiusInKm)
-            .OrderBy(x => x.distance)
-            .Take(20)
-            .Select(x => x.driver)
-            .ToList();
+        return await _dbContext.Drivers.Where(x => driverIds.Contains(x.Id)).ToListAsync(cancellation);
     }
 }

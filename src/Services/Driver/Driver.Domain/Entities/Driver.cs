@@ -87,6 +87,12 @@ public class Driver : AggregateRoot
         Status = DriverStatus.Commuting;
     }
 
+    public void GoAvailable()
+    {
+        AddDomainEvent(DriverStatusChangedEvent.Create(Id, Status, DriverStatus.Available));
+        Status = DriverStatus.Available;
+    }
+
     public void StartRide()
     {
         if (Status == DriverStatus.OnRide) throw new Exception("Driver is busy");

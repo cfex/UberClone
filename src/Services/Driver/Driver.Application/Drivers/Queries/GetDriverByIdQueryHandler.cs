@@ -10,7 +10,7 @@ public class GetDriverByIdQueryHandler
 {
     private readonly IDriverRepository _driverRepository;
 
-    public GetDriverByIdQueryHandler(IUnitOfWork unitOfWork, IDriverRepository driverRepository)
+    public GetDriverByIdQueryHandler(IDriverRepository driverRepository)
     {
         _driverRepository = driverRepository;
     }

@@ -1,6 +1,5 @@
 using Driver.Domain.Enums;
 using Driver.Domain.Repositories;
-using Driver.Domain.ValueObjects;
 using Driver.Infrastructure.Grpc;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
@@ -44,7 +43,7 @@ public class DriverGrpcService : DriverService.DriverServiceBase
     {
         _logger.LogInformation("Checking availability for driver: {DriverId}", request.DriverId);
 
-        var driver = await _driverRepository.GetByIdAsync(Guid.Parse(request.DriverId));
+        var driver = await _driverRepository.GetByIdAsync(Guid.Parse(request.DriverId), context.CancellationToken);
         if (driver == null) throw new RpcException(new Status(StatusCode.NotFound, "Driver not found"));
 
         var response = new IsDriverAvailableResponse
@@ -59,12 +58,10 @@ public class DriverGrpcService : DriverService.DriverServiceBase
         AvailableDriversRequest request,
         ServerCallContext context)
     {
-        _logger.LogInformation("Getting available drivers near location: ({Latitude}, {Longitude})",
-            request.Latitude, request.Longitude);
+        _logger.LogInformation("Getting available drivers by ids");
 
-        var passengerLocation = Location.Create(request.Longitude, request.Latitude);
-
-        var drivers = await _driverRepository.GetAvailableDriversInArea(passengerLocation);
+        var ids = request.DriverId.Select(Guid.Parse).ToList();
+        var drivers = await _driverRepository.GetDriversByIdsAsync(ids, context.CancellationToken);
 
         var response = new AvailableDriversList();
 

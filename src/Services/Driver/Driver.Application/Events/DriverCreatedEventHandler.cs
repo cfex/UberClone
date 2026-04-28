@@ -1,6 +1,5 @@
 using Driver.Application.Abstractions;
 using Driver.Domain.Events;
-using Driver.Domain.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Shared.Contracts.IntegrationEvents.Driver;
@@ -12,8 +11,7 @@ public class DriverCreatedEventHandler : INotificationHandler<DriverDomainEvent<
     private readonly IEventBus _eventBus;
     private readonly ILogger<DriverCreatedEventHandler> _logger;
 
-    public DriverCreatedEventHandler(ILogger<DriverCreatedEventHandler> logger, IEventBus eventBus,
-        IUnitOfWork unitOfWork)
+    public DriverCreatedEventHandler(ILogger<DriverCreatedEventHandler> logger, IEventBus eventBus)
     {
         _logger = logger;
         _eventBus = eventBus;

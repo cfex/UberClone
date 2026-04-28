@@ -16,20 +16,20 @@ public class UserCreatedEventHandler
         _driverRepository = driverRepository;
     }
 
-    public async Task Handle(DriverCreatedIntegrationEvent message)
+    public async Task Handle(DriverCreatedIntegrationEvent @event)
     {
-        if (!message.Role.ToLower().Equals("driver")) return;
+        if (!@event.Role.ToLower().Equals("driver")) return;
 
-        var existingDriver = await _driverRepository.GetByEmail(message.Email);
+        var existingDriver = await _driverRepository.GetByEmailAsync(@event.Email);
         if (existingDriver != null) return;
 
         var driver = Domain.Entities.Driver.Create(
-            message.DriverId,
-            FullName.Create(message.FirstName, message.LastName),
-            Email.Create(message.Email),
+            @event.DriverId,
+            FullName.Create(@event.FirstName, @event.LastName),
+            Email.Create(@event.Email),
             DriverStatus.New,
             Money.Create(0, Currency.USD),
-            message.Role, null, null
+            @event.Role, null, null
         );
 
         await _driverRepository.CreateAsync(driver);

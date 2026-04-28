@@ -41,10 +41,9 @@ public static class DependencyInjection
             options.Address = new Uri($"http://{driverGrpcOptions.IpAddr}:{driverGrpcOptions.Port}");
         });
 
-        // services.AddScoped<IDriverGrpcClient, DriverGrpcClient>();
-
         services.AddScoped<IDriverRepository, DriverRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IEventBus, TransitEventBus>();
 
         services.AddOptions<RabbitMqOptions>()
             .Bind(configuration.GetSection(RabbitMqOptions.SectionName))
@@ -80,7 +79,6 @@ public static class DependencyInjection
                 });
             x.Discovery.IncludeAssembly(typeof(AssemblyReference).Assembly);
         });
-        services.AddScoped<IEventBus, TransitEventBus>();
 
         return services;
     }

@@ -6,6 +6,7 @@ namespace Driver.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[ApiExplorerSettings(IgnoreApi = true)]
 public class SeedController : ControllerBase
 {
     private readonly DriverDbContext _context;
