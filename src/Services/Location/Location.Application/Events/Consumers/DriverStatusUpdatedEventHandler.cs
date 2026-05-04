@@ -1,27 +1,38 @@
+using Location.Application.Abstraction;
 using Microsoft.Extensions.Logging;
 using Shared.Contracts.IntegrationEvents.Driver;
-using StackExchange.Redis;
 
 namespace Location.Application.Events.Consumers;
 
 public class DriverStatusUpdatedEventHandler
 {
-    private static readonly RedisKey DriverGeoKey = "driver:locations";
-
-    private readonly IDatabase _cache;
     private readonly ILogger<DriverStatusUpdatedEventHandler> _logger;
 
-    public DriverStatusUpdatedEventHandler(IDatabase cache, ILogger<DriverStatusUpdatedEventHandler> logger)
+    private readonly ILocationRepository _repository;
+
+    public DriverStatusUpdatedEventHandler(ILogger<DriverStatusUpdatedEventHandler> logger,
+        ILocationRepository repository)
     {
-        _cache = cache;
         _logger = logger;
+        _repository = repository;
     }
 
     public async Task Handle(DriverStatusChangedIntegrationEvent @event)
     {
         _logger.LogInformation("Handling driver status updated event");
 
-        if (@event.NewStatus.Equals("offline", StringComparison.CurrentCultureIgnoreCase))
-            await _cache.GeoRemoveAsync(DriverGeoKey, new RedisValue(@event.DriverId.ToString()));
+        switch (@event.NewStatus)
+        {
+            case "offline":
+                await _repository.RemoveDriverLocationAsync(@event.DriverId);
+                break;
+            // TODO: handle all other statuses (maybe)
+            case "online":
+            case "available":
+                break;
+            default:
+                _logger.LogInformation($"New driver status {@event.NewStatus}");
+                break;
+        }
     }
 }
