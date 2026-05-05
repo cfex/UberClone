@@ -1,39 +1,35 @@
 using Driver.Application.Abstractions;
-using Driver.Application.IntegrationEvents;
 using Driver.Domain.Events;
-using Driver.Domain.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Shared.Contracts.IntegrationEvents.Driver;
 
 namespace Driver.Application.Events;
 
 public class DriverCreatedEventHandler : INotificationHandler<DriverDomainEvent<DriverCreatedEvent>>
 {
-    private readonly IEventBus _bus;
-    private readonly IDriverRepository _driverRepository;
+    private readonly IEventBus _eventBus;
     private readonly ILogger<DriverCreatedEventHandler> _logger;
 
-    public DriverCreatedEventHandler(ILogger<DriverCreatedEventHandler> logger, IEventBus bus,
-        IDriverRepository driverRepository, IUnitOfWork unitOfWork)
+    public DriverCreatedEventHandler(ILogger<DriverCreatedEventHandler> logger, IEventBus eventBus)
     {
         _logger = logger;
-        _bus = bus;
-        _driverRepository = driverRepository;
+        _eventBus = eventBus;
     }
 
     public async Task Handle(DriverDomainEvent<DriverCreatedEvent> notification, CancellationToken cancellationToken)
     {
         var domainEvent = notification.DomainEvent;
 
-        var integrationEvent = new UserCreatedIntegrationEvent
+        var integrationEvent = new DriverCreatedIntegrationEvent
         {
-            UserId = domainEvent.driverId,
-            FirstName = domainEvent.fullName.FirstName,
-            LastName = domainEvent.fullName.LastName,
-            Email = domainEvent.email.Value,
-            Role = domainEvent.role
+            DriverId = domainEvent.DriverId,
+            FirstName = domainEvent.FullName.FirstName,
+            LastName = domainEvent.FullName.LastName,
+            Email = domainEvent.Email.Value,
+            Role = domainEvent.Role
         };
 
-        await _bus.PublishAsync(integrationEvent, cancellationToken);
+        await _eventBus.PublishAsync(integrationEvent, cancellationToken);
     }
 }

@@ -1,7 +1,8 @@
 using Driver.Application.Events;
-using Driver.Domain.Primitives;
+using Driver.Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Shared.Domain.Primitives;
 
 namespace Driver.Infrastructure.Persistence;
 
@@ -15,6 +16,8 @@ public sealed class DriverDbContext : DbContext
     }
 
     public DbSet<Domain.Entities.Driver> Drivers => Set<Domain.Entities.Driver>();
+    public DbSet<Document> Documents => Set<Document>();
+    public DbSet<Vehicle> Vehicles => Set<Vehicle>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -1,15 +1,11 @@
+using System.Text.Json.Serialization;
+
 namespace Driver.Domain.ValueObjects;
 
-public record Email
+public record Email(string Value, bool IsVerified)
 {
-    private Email(string value, bool isVerified)
-    {
-        Value = value;
-        IsVerified = isVerified;
-    }
-
-    public string Value { get; private set; }
-    public bool IsVerified { get; private set; }
+    public string Value { get; private set; } = Value;
+    public bool IsVerified { get; private set; } = IsVerified;
 
 
     public static Email Create(string value, bool isVerified = false)

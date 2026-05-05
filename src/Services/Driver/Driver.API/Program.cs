@@ -1,14 +1,25 @@
+using System.Net;
 using Driver.API.Exceptions;
 using Driver.Application;
 using Driver.Infrastructure;
+using Driver.Infrastructure.Configuration;
+using Driver.Infrastructure.Persistence;
+using Driver.Infrastructure.Seeding;
+using Driver.Infrastructure.Services.gRPC.Driver;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.EntityFrameworkCore;
 
 namespace Driver.API;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+
+        var driverGrpcOptions = builder.Configuration.GetSection(DriverGrpcOptions.SectionName).Get<DriverGrpcOptions>()
+                                ?? throw new InvalidOperationException(
+                                    "DriverGrpc configuration is missing or invalid.");
 
         builder.Services.AddProblemDetails(configure =>
         {
@@ -19,6 +30,15 @@ public class Program
         });
         builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
         builder.Services.AddOpenApi();
+
+        builder.WebHost.ConfigureKestrel(options =>
+        {
+            options.Listen(IPAddress.Any, 5000,
+                listenOptions => { listenOptions.Protocols = HttpProtocols.Http1; });
+            options.Listen(IPAddress.Any, driverGrpcOptions.Port,
+                listenOptions => { listenOptions.Protocols = HttpProtocols.Http2; });
+        });
+
         builder.Services.AddDriverInfrastructure(builder.Configuration);
         builder.Services.AddDriverApplication(builder.Configuration);
         builder.Services.AddControllers();
@@ -28,9 +48,22 @@ public class Program
         if (app.Environment.IsDevelopment()) app.MapOpenApi();
 
         app.UseExceptionHandler();
+
+        app.MapGrpcService<DriverGrpcService>();
+
+
         app.MapControllers();
         app.UseHttpsRedirection();
 
-        app.Run();
+        await app.StartAsync();
+
+        using (var scope = app.Services.CreateScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<DriverDbContext>();
+            await context.Database.MigrateAsync();
+            await DriverSeeder.SeedDriversAsync(context);
+        }
+
+        await app.WaitForShutdownAsync();
     }
 }

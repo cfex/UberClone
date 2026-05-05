@@ -1,3 +1,4 @@
+using FluentValidation;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,22 +13,46 @@ internal sealed class GlobalExceptionHandler(
     {
         logger.LogError(exception, "Unhandled exception occured");
 
-        httpContext.Response.StatusCode = exception switch
+        var problemDetails = exception switch
         {
-            ApplicationException => StatusCodes.Status400BadRequest,
-            _ => StatusCodes.Status500InternalServerError
+            ValidationException validationException => new ProblemDetails
+            {
+                Type = "ValidationFailure",
+                Title = "One or more validation errors occurred",
+                Status = StatusCodes.Status400BadRequest,
+                Extensions = new Dictionary<string, object?>
+                {
+                    ["errors"] = validationException.Errors
+                        .GroupBy(e => e.PropertyName)
+                        .ToDictionary(
+                            g => g.Key,
+                            g => g.Select(e => e.ErrorMessage).ToArray()
+                        )
+                }
+            },
+            ApplicationException => new ProblemDetails
+            {
+                Type = exception.GetType().Name,
+                Title = "Bad Request",
+                Status = StatusCodes.Status400BadRequest,
+                Detail = exception.Message
+            },
+            _ => new ProblemDetails
+            {
+                Type = exception.GetType().Name,
+                Title = "An error occurred",
+                Status = StatusCodes.Status500InternalServerError,
+                Detail = exception.Message
+            }
         };
+
+        httpContext.Response.StatusCode = problemDetails.Status ?? StatusCodes.Status500InternalServerError;
 
         return await problemDetailsService.TryWriteAsync(new ProblemDetailsContext
         {
             HttpContext = httpContext,
             Exception = exception,
-            ProblemDetails = new ProblemDetails
-            {
-                Type = exception.GetType().Name,
-                Title = "An error occured",
-                Detail = exception.Message
-            }
+            ProblemDetails = problemDetails
         });
     }
 }

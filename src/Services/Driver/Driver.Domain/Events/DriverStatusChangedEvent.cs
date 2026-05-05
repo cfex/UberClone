@@ -1,14 +1,14 @@
 using Driver.Domain.Enums;
-using Driver.Domain.Primitives;
+using Shared.Domain.Primitives;
 
 namespace Driver.Domain.Events;
 
 public record DriverStatusChangedEvent(
     Guid EventId,
     DateTime OccurredOn,
-    Guid driverId,
-    DriverStatus oldStatus,
-    DriverStatus newStatus) : IDomainEvent
+    Guid DriverId,
+    DriverStatus OldStatus,
+    DriverStatus NewStatus) : IDomainEvent
 {
     public static DriverStatusChangedEvent Create(Guid driverId, DriverStatus oldStatus, DriverStatus newStatus)
     {

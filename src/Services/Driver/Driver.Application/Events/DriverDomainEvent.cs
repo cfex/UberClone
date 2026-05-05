@@ -1,5 +1,5 @@
-using Driver.Domain.Primitives;
 using MediatR;
+using Shared.Domain.Primitives;
 
 namespace Driver.Application.Events;
 

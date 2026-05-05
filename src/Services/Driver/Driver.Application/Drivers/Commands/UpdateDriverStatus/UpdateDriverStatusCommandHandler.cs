@@ -17,7 +17,6 @@ internal sealed class UpdateDriverStatusCommandHandler : IRequestHandler<UpdateD
 
     public async Task<Unit> Handle(UpdateDriverStatusCommand request, CancellationToken cancellationToken)
     {
-        await _unitOfWork.BeginTransactionAsync(cancellationToken);
         var driver = await _driverRepository.GetByIdAsync(request.DriverId, cancellationToken);
         if (driver == null) throw new Exception("Driver not found");
 
@@ -29,9 +28,16 @@ internal sealed class UpdateDriverStatusCommandHandler : IRequestHandler<UpdateD
         {
             case DriverStatusAction.GoActive:
             case DriverStatusAction.GoAvailable:
+                driver.GoAvailable();
+                break;
             case DriverStatusAction.GoBusy:
+                driver.GoOffline();
+                break;
             case DriverStatusAction.StartRide:
+                driver.StartRide();
+                break;
             case DriverStatusAction.StartCommuting:
+                driver.StartCommuting();
                 break;
             case DriverStatusAction.GoOffline:
                 driver.GoOffline();
@@ -40,11 +46,10 @@ internal sealed class UpdateDriverStatusCommandHandler : IRequestHandler<UpdateD
                 driver.GoOnline();
                 break;
             default:
-                driver.GoOffline();
-                break;
+                throw new Exception("Unknown status");
         }
 
-        await _unitOfWork.CommitTransactionAsync(cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Unit.Value;
     }

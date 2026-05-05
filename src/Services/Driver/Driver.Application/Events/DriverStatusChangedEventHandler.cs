@@ -1,7 +1,7 @@
 using Driver.Application.Abstractions;
-using Driver.Application.IntegrationEvents;
 using Driver.Domain.Events;
 using MediatR;
+using Shared.Contracts.IntegrationEvents.Driver;
 
 namespace Driver.Application.Events;
 
@@ -21,9 +21,9 @@ public class DriverStatusChangedEventHandler : INotificationHandler<DriverDomain
 
         var integrationEvent = new DriverStatusChangedIntegrationEvent
         {
-            DriverId = domainEvent.driverId,
-            OldStatus = domainEvent.oldStatus.ToString(),
-            NewStatus = domainEvent.newStatus.ToString(),
+            DriverId = domainEvent.DriverId,
+            OldStatus = domainEvent.OldStatus.ToString(),
+            NewStatus = domainEvent.NewStatus.ToString(),
             OccurredOn = domainEvent.OccurredOn
         };
 

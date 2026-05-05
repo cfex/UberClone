@@ -1,4 +1,4 @@
-using Driver.Application.Dtos;
+using Driver.Application.Dto;
 using MediatR;
 
 namespace Driver.Application.Drivers.Queries;

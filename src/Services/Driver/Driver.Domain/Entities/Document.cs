@@ -1,5 +1,5 @@
 using Driver.Domain.Enums;
-using Driver.Domain.Primitives;
+using Shared.Domain.Primitives;
 
 namespace Driver.Domain.Entities;
 
@@ -9,22 +9,28 @@ public class Document : Entity
     {
     }
 
-    private Document(DocumentType documentType, DateTime expiryDate) : base(Guid.NewGuid())
+    private Document(Guid id, DocumentType documentType, DateTime expiryDate) : base(id)
     {
         DocumentType = documentType;
         ExpiryDate = expiryDate;
     }
 
-    private DocumentType DocumentType { get; }
-    private DateTime ExpiryDate { get; }
+    public DocumentType DocumentType { get; private set; }
+    public DateTime ExpiryDate { get; private set; }
 
-    public static Document Create(DocumentType documentType, DateTime expiryDate)
+    public static Document Create(Guid id, DocumentType documentType, DateTime expiryDate)
     {
-        return new Document(documentType, expiryDate);
+        return new Document(id, documentType, expiryDate);
     }
+
 
     public bool IsExpired()
     {
-        return ExpiryDate < DateTime.Now;
+        return ExpiryDate < DateTime.UtcNow;
+    }
+
+    public void ExtendDocument()
+    {
+        ExpiryDate = ExpiryDate.AddYears(1);
     }
 }

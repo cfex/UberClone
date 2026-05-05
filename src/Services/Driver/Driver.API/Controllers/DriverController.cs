@@ -1,6 +1,7 @@
 using Driver.Application.Drivers.Commands.CreateDriver;
 using Driver.Application.Drivers.Commands.UpdateDriverStatus;
 using Driver.Application.Drivers.Queries;
+using Driver.Application.Dto;
 using Driver.Application.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -72,7 +73,7 @@ public class DriverController : ControllerBase
 
         return CreatedAtAction(
             nameof(GetDriverById),
-            new { id = response },
+            new { driverId = response },
             response
         );
     }

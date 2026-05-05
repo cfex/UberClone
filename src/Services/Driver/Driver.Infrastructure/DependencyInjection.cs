@@ -1,14 +1,15 @@
 using Driver.Application;
 using Driver.Application.Abstractions;
-using Driver.Domain.Events;
 using Driver.Domain.Repositories;
 using Driver.Infrastructure.Configuration;
+using Driver.Infrastructure.Grpc;
 using Driver.Infrastructure.MessageQueue;
 using Driver.Infrastructure.Persistence;
 using Driver.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Shared.Contracts.IntegrationEvents.Driver;
 using Wolverine;
 using Wolverine.RabbitMQ;
 
@@ -24,8 +25,25 @@ public static class DependencyInjection
             options.UseNpgsql(configuration.GetConnectionString("DriverDbConnectionString"));
         });
 
+        services.AddGrpc();
+
+        services.AddOptions<DriverGrpcOptions>()
+            .Bind(configuration.GetSection(DriverGrpcOptions.SectionName))
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
+
+        var driverGrpcOptions = configuration.GetSection(DriverGrpcOptions.SectionName).Get<DriverGrpcOptions>()
+                                ?? throw new InvalidOperationException(
+                                    "DriverGrpc configuration is missing or invalid.");
+
+        services.AddGrpcClient<DriverService.DriverServiceClient>(options =>
+        {
+            options.Address = new Uri($"http://{driverGrpcOptions.IpAddr}:{driverGrpcOptions.Port}");
+        });
+
         services.AddScoped<IDriverRepository, DriverRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IEventBus, TransitEventBus>();
 
         services.AddOptions<RabbitMqOptions>()
             .Bind(configuration.GetSection(RabbitMqOptions.SectionName))
@@ -51,27 +69,16 @@ public static class DependencyInjection
             x.ListenToRabbitQueue("user-created-events")
                 .UseForReplies()
                 .UseDurableInbox();
-            x.ListenForMessagesFrom("ride-request-events")
-                .UseForReplies()
-                .UseDurableInbox();
 
-            x.PublishMessage<DriverStatusChangedEvent>()
-                .ToRabbitExchange("driver_events", ex =>
-                {
-                    ex.ExchangeType = ExchangeType.Topic;
-                    ex.IsDurable = true;
-                    ex.BindQueue("driver-events-queue");
-                });
-            x.PublishMessage<DriverCreatedEvent>()
+            x.PublishMessage<DriverStatusChangedIntegrationEvent>()
                 .ToRabbitExchange("driver-events", ex =>
                 {
                     ex.ExchangeType = ExchangeType.Topic;
                     ex.IsDurable = true;
-                    ex.BindQueue("driver-events-queue");
+                    ex.BindQueue("driver-status-queue");
                 });
             x.Discovery.IncludeAssembly(typeof(AssemblyReference).Assembly);
         });
-        services.AddScoped<IEventBus, TransitEventBus>();
 
         return services;
     }

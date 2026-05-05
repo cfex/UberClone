@@ -21,14 +21,14 @@ public sealed class DriverRepository : IDriverRepository
             .FirstOrDefaultAsync(cancellation);
     }
 
-    public async Task<Domain.Entities.Driver?> GetByEmail(string email, CancellationToken cancellation = default)
+    public async Task<Domain.Entities.Driver?> GetByEmailAsync(string email, CancellationToken cancellation = default)
     {
         return await _dbContext.Drivers
-            .Where(x => x.Email.Equals(email))
+            .Where(x => x.Email.Value.Equals(email))
             .FirstOrDefaultAsync(cancellation);
     }
 
-    public async Task<List<Domain.Entities.Driver>> GetAllByStatus(DriverStatus status,
+    public async Task<List<Domain.Entities.Driver>> GetAllByStatusAsync(DriverStatus status,
         CancellationToken cancellation = default)
     {
         return await _dbContext.Drivers
@@ -42,8 +42,16 @@ public sealed class DriverRepository : IDriverRepository
         await _dbContext.Drivers.AddAsync(driver, cancellation);
     }
 
-    public async Task<List<Domain.Entities.Driver>> GetAllDrivers(CancellationToken cancellation = default)
+    // TODO: Add pegination
+    public async Task<List<Domain.Entities.Driver>> GetAllDriversAsync(CancellationToken cancellation = default)
     {
         return await _dbContext.Drivers.AsNoTracking().ToListAsync(cancellation);
+    }
+
+    // TODO: Add pegination
+    public async Task<List<Domain.Entities.Driver>> GetDriversByIdsAsync(List<Guid> driverIds,
+        CancellationToken cancellation = default)
+    {
+        return await _dbContext.Drivers.Where(x => driverIds.Contains(x.Id)).ToListAsync(cancellation);
     }
 }

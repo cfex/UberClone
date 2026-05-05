@@ -1,4 +1,4 @@
-using Driver.Application.Dtos;
+using Driver.Application.Dto;
 using Driver.Application.Extensions;
 using Driver.Domain.Repositories;
 using MediatR;
@@ -10,7 +10,7 @@ public class GetDriverByIdQueryHandler
 {
     private readonly IDriverRepository _driverRepository;
 
-    public GetDriverByIdQueryHandler(IUnitOfWork unitOfWork, IDriverRepository driverRepository)
+    public GetDriverByIdQueryHandler(IDriverRepository driverRepository)
     {
         _driverRepository = driverRepository;
     }
