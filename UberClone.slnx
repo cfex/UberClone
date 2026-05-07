@@ -13,6 +13,12 @@
         <Project Path="src/Services/Location/Location.Domain/Location.Domain.csproj" />
         <Project Path="src/Services/Location/Location.Infrastructure/Location.Infrastructure.csproj" />
     </Folder>
+    <Folder Name="/src/Services/Passenger/">
+        <Project Path="src/Services/Passenger/Passenger.API/Passenger.API.csproj" />
+        <Project Path="src/Services/Passenger/Passenger.Application/Passenger.Application.csproj" />
+        <Project Path="src/Services/Passenger/Passenger.Domain/Passenger.Domain.csproj" />
+        <Project Path="src/Services/Passenger/Passenger.Infrastructure/Passenger.Infrastructure.csproj" />
+    </Folder>
     <Folder Name="/src/Services/Ride/">
         <Project Path="src/Services/Ride/Ride.API/Ride.API.csproj" />
         <Project Path="src/Services/Ride/Ride.Application/Ride.Application.csproj" />

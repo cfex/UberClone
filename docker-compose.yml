@@ -15,6 +15,22 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+  passenger-db:
+    image: postgres:17-alpine
+    container_name: passenger-db
+    environment:
+      POSTGRES_DB: passenger_db
+      POSTGRES_USER: passenger
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5435:5432"
+    volumes:
+      - passenger-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U passenger -d passenger_db" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
   ride-db:
     image: postgres:17-alpine
     container_name: ride-db
@@ -47,7 +63,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-
   redis:
     image: redis:7-alpine
     container_name: redis

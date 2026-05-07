@@ -1,14 +1,13 @@
-using Driver.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Driver.Infrastructure.Persistence.Configurations;
+namespace Passenger.Infrastructure.Persistance.Configurations;
 
-public sealed class DriverConfiguration : IEntityTypeConfiguration<Domain.Entities.Driver>
+public sealed class PassengerConfiguration : IEntityTypeConfiguration<Domain.Entities.Passenger>
 {
-    public void Configure(EntityTypeBuilder<Domain.Entities.Driver> builder)
+    public void Configure(EntityTypeBuilder<Domain.Entities.Passenger> builder)
     {
-        builder.ToTable("drivers");
+        builder.ToTable("passengers");
         builder.HasKey(x => x.Id);
 
         builder.Property(x => x.Id)
@@ -43,28 +42,6 @@ public sealed class DriverConfiguration : IEntityTypeConfiguration<Domain.Entiti
                 .HasColumnName("is_verified")
                 .IsRequired();
         });
-
-        builder.OwnsOne(x => x.Fare, fare =>
-        {
-            fare.Property(x => x.Amount)
-                .HasColumnName("fare_amount")
-                .IsRequired();
-
-            fare.Property(x => x.Currency)
-                .HasColumnName("fare_currency")
-                .HasConversion<string>()
-                .IsRequired();
-        });
-
-        builder.HasOne(x => x.Document)
-            .WithOne()
-            .HasForeignKey<Document>("driver_id")
-            .IsRequired(false);
-
-        builder.HasOne(x => x.Vehicle)
-            .WithOne()
-            .HasForeignKey<Vehicle>("driver_id")
-            .IsRequired(false);
 
         builder.Ignore("_domainEvents");
     }
