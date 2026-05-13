@@ -1,8 +1,8 @@
+using Driver.API.Dto;
 using Driver.Application.Drivers.Commands.CreateDriver;
 using Driver.Application.Drivers.Commands.UpdateDriverStatus;
 using Driver.Application.Drivers.Queries;
 using Driver.Application.Dto;
-using Driver.Application.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,10 +25,10 @@ public class DriverController : ControllerBase
     [HttpGet("{driverId:guid}")]
     [ProducesResponseType(typeof(DriverResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<DriverResponseDto>> GetDriverById(string driverId,
+    public async Task<ActionResult<DriverResponseDto>> GetDriverById(Guid driverId,
         CancellationToken cancellationToken)
     {
-        var query = new GetDriverByIdQuery(Guid.Parse(driverId));
+        var query = new GetDriverByIdQuery(driverId);
         var response = await _mediator.Send(query, cancellationToken);
 
         return Ok(response);
@@ -37,10 +37,10 @@ public class DriverController : ControllerBase
     [HttpPatch("{driverId:guid}")]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<Guid>> UpdateDriverStatus(string driverId, string status,
+    public async Task<ActionResult<Guid>> UpdateDriverStatus(Guid driverId, string status,
         CancellationToken cancellationToken)
     {
-        var command = new UpdateDriverStatusCommand(Guid.Parse(driverId), status);
+        var command = new UpdateDriverStatusCommand(driverId, status);
         await _mediator.Send(command, cancellationToken);
 
         return Ok("Driver status updated");

@@ -15,19 +15,6 @@ public record Location(double Longitude, double Latitude)
         return new Location(longitude, latitude);
     }
 
-    public (double latMin, double latMax, double lonMin, double lonMax) BoundingBox(double radiusKm)
-    {
-        var latDelta = radiusKm / KmPerDegreeLat;
-        var lonDelta = radiusKm / (KmPerDegreeLat * Math.Cos(Latitude * Math.PI / 180.0));
-
-        return (
-            latMin: Latitude - latDelta,
-            latMax: Latitude + latDelta,
-            lonMin: Longitude - lonDelta,
-            lonMax: Longitude + lonDelta
-        );
-    }
-
     public double DistanceInKilometersTo(Location other)
     {
         var lat1Rad = DegreesToRadians(Latitude);
@@ -47,13 +34,5 @@ public record Location(double Longitude, double Latitude)
     private static double DegreesToRadians(double degrees)
     {
         return degrees * Math.PI / 180.0;
-    }
-
-    public static (double Latitude, double Longitude) RandomLocation()
-    {
-        var random = new Random();
-        var latitude = random.NextDouble() * 180 - 90;
-        var longitude = random.NextDouble() * 360 - 180;
-        return (latitude, longitude);
     }
 }

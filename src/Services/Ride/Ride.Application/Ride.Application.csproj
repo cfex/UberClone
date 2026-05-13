@@ -14,7 +14,6 @@
 
     <ItemGroup>
         <Folder Include="Events\Consumers\"/>
-        <Folder Include="Rides\Commands\AcceptRide\"/>
         <Folder Include="Rides\Commands\CancelRide\"/>
     </ItemGroup>
 

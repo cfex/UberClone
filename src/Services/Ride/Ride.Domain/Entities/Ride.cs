@@ -56,8 +56,9 @@ public class Ride : AggregateRoot
     public void StartRide()
     {
         Status = RideStatus.InProgress;
-        StartedAt = DateTime.UtcNow;
-        // AddDomainEvent();
+        var now = DateTime.UtcNow;
+        StartedAt = now;
+        AddDomainEvent(RideStartedEvent.Create(DriverId!.Value, PassengerId, Price.Amount, now));
     }
 
     public void CompleteRide()
@@ -68,14 +69,23 @@ public class Ride : AggregateRoot
         AddDomainEvent(RideCompletedEvent.Create(DriverId!.Value, PassengerId, Price, now));
     }
 
+    // todo: track who cancelled the ride
     public void CancelRide()
     {
         Status = RideStatus.Cancelled;
-        // AddDomainEvent();
+        AddDomainEvent(RideCancelledEvent.Create(DriverId, PassengerId, DateTime.UtcNow));
     }
 
     public void SetFinalPrice(Money price)
     {
         Price = price;
+    }
+
+    public void RequeueRide()
+    {
+        // implement
+        Status = RideStatus.Requested;
+        DriverId = null;
+        // AddDomainEvent(RideRequeueEvent.Create());
     }
 }

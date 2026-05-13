@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Ride.API.Dto;
+using Ride.Application.Rides.Commands.AcceptRide;
 using Ride.Application.Rides.Commands.RequestRide;
 using Ride.Application.Rides.Queries;
 
@@ -31,6 +32,20 @@ public class RideController : ControllerBase
         var response = await _mediator.Send(command, cancellationToken);
 
         _logger.LogInformation("Ride is requested");
+
+        return CreatedAtAction(nameof(GetRideInfo), new { rideId = response }, response);
+    }
+
+    [HttpPost("{rideId}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> AcceptRide([FromRoute] string rideId, [FromBody] AcceptRideRequest request,
+        CancellationToken cancellationToken)
+    {
+        var command = new AcceptRideCommand(request.DriverId, Guid.Parse(rideId));
+        var response = await _mediator.Send(command, cancellationToken);
+
+        _logger.LogInformation("Ride is accepted");
 
         return CreatedAtAction(nameof(GetRideInfo), new { rideId = response }, response);
     }

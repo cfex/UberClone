@@ -19,9 +19,4 @@
         <ProjectReference Include="..\Driver.Infrastructure\Driver.Infrastructure.csproj"/>
     </ItemGroup>
 
-    <ItemGroup>
-        <Folder Include="Configuration\"/>
-        <Folder Include="Dtos\"/>
-    </ItemGroup>
-
 </Project>

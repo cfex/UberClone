@@ -36,7 +36,6 @@ public class RequestRideCommandHandler : IRequestHandler<RequestRideCommand, Gui
             destination,
             RideStatus.Requested, DateTime.UtcNow);
 
-
         await _rideRepository.CreateAsync(ride, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
